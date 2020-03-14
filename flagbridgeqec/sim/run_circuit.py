@@ -84,18 +84,6 @@ class FT_protocol(object):
         return(esm_circuits)
 
 
-    def pd_circuits(self,cir_id):
-        if cir_id == 10:
-            pd_circuits= []
-            pd_circuits.extend([cir_steane10_ft_check(1),cir_steane10_ft_check(2)])
-        elif cir_id == 20:
-            pd_circuits= []
-            pd_circuits.extend([cir_steane20_ft_check(1),cir_steane20_ft_check(2)])
-        elif cir_id == '4a':
-            pd_circuits= []
-            pd_circuits.extend([cir_steane_4a(4),cir_steane_4a(4)])
-        return(pd_circuits)
-
     def run(self, trials = 1):
         total_errors = 0 
         for trial in range(trials):
@@ -107,14 +95,14 @@ class FT_protocol(object):
             synd_err = circ2err(self.esm_circuits[0], fowler_model(self.esm_circuits[0], 
                                                                    self.p1, self.p1, 
                                                                    self.p1, self.pI), 
-                                err, self.z_ancillas)
-
+                                err)
+            err.prep(self.z_ancillas)
             synd1 |= synd_err[0]
             err = synd_err[1]
                             
             if len(synd1):
                 subcir = self.esm_circuits[2]
-                synd_err = circ2err_no_prep(subcir, fowler_model(subcir, self.p1, self.p1, 
+                synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p1, 
                                                          self.p1, self.pI), err)
                 err.prep(self.ancillas)
                 synd2 |= synd_err[0]
@@ -122,8 +110,8 @@ class FT_protocol(object):
                 flag_qs = synd1 & set(self.q_flag)
                 synd_qx = sorted(synd2 & set(self.q_syndx))
                 synd_qz = sorted(synd2 & set(self.q_syndz))
+
                 if len(flag_qs):
-                    
                     try:
                         corr *= self.lut_flag[tuple(flag_qs)][tuple(synd_qx)]
                         corr *= self.lut_flag[tuple(flag_qs)][tuple(synd_qz)]
@@ -140,14 +128,14 @@ class FT_protocol(object):
                         print('not in lut')
             else:
                 subcir = self.esm_circuits[1]
-                synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p1, self.p1, self.pI), err, self.x_ancillas)
-
+                synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p1, self.p1, self.pI), err)
+                err.prep(self.x_ancillas)
                 synd1 |= synd_err[0]
                 err = synd_err[1]
                 if len(synd1):
 
                     subcir = self.esm_circuits[3]
-                    synd_err = circ2err_no_prep(subcir, fowler_model(subcir, 
+                    synd_err = circ2err(subcir, fowler_model(subcir, 
                                                                      self.p1, self.p1, self.p1, 
                                                                      self.pI), err)
                     err.prep(self.ancillas)
@@ -178,8 +166,7 @@ class FT_protocol(object):
             synd_fnl = set()
             for i in range(0,2):
                 subcir = self.esm_circuits[i]
-        
-                synd_err = circ2err_no_prep(subcir, fowler_model(subcir, 0, 0, 0), err)
+                synd_err = circ2err(subcir, fowler_model(subcir, 0, 0, 0), err)
                 synd_fnl |= synd_err[0]
                 err = synd_err[1]
 
@@ -194,24 +181,10 @@ class FT_protocol(object):
         print(total_errors)
         return(total_errors)
 
-def circ2err(circ, err_model, err, anc):
+def circ2err(circ, err_model, err):
     synd = set()
-
     for stp, mdl in list(zip(circ, err_model)):
         # run timestep, then sample             
-        new_synds, err = cm.apply_step(stp, err)
-        err *= product(_.sample() for _ in mdl)
-        synd |= new_synds[1]
-    new_synds, err = cm.apply_step(circ[-1], err)
-    synd |= new_synds[1]
-    err.prep(anc)
-    return synd, err
-
-def circ2err_no_prep(circ,err_model,err):
-    synd = set()
-
-    for stp, mdl in list(zip(circ, err_model)):
-        # run timestep, then sample                                                        
         new_synds, err = cm.apply_step(stp, err)
         err *= product(_.sample() for _ in mdl)
         synd |= new_synds[1]
