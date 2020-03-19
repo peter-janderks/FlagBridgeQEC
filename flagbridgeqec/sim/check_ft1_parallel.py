@@ -322,7 +322,7 @@ def esm_apply_err_skip_P(extractor, anc, errors, rg=0, bk=False):
 if __name__ == '__main__':
     x = Check_FT(cir_index='5a')
     x.lut_gen()
-#    err = x.run()
+    err = x.run()
     if err:
          print('Yes, this circuit is FT :)')
     else:

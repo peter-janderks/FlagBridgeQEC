@@ -1,3 +1,5 @@
+from flagbridgeqec.utils.circuit_construction import op_list, add_idling
+
 def cir_steane_5a(section):
     timesteps = []
     if section == 1:
@@ -9,21 +11,6 @@ def cir_steane_5a(section):
     elif section == 4:
         timesteps = cir_5a_second_round_after_second_half(timesteps)
     return(timesteps)
-
-def add_idling(timesteps, anc_set, data_set):
-    dat_locs = set(anc_set + data_set)
-    for step in timesteps:
-        step.extend([('I', q) for q in dat_locs - support(step)])
-    return timesteps
-
-def support(timestep):
-    """                                                                                          
-    Qubits on which a list of gates act.                                                    
-    """
-    output = []
-    for elem in timestep:
-        output += elem[1:]
-    return set(output)
 
 def cir_5a_first_half(timesteps):
     timesteps.append(op_list([('P', [8,12])]))

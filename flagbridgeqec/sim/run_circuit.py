@@ -55,6 +55,9 @@ class FT_protocol(object):
             self.x_ancillas = set((80,90,100,110,120))
             self.z_ancillas = set((8,9,10,11,12))
 
+        elif cir_id == 'a4_L2_split':
+            Print('test')
+
         self.cir_index = cir_id
 
         self.ancillas = self.q_synd + self.q_flag
@@ -80,7 +83,9 @@ class FT_protocol(object):
         elif cir_id == '5a':
             esm_circuits = []
             esm_circuits.extend([cir_steane_5a(1),cir_steane_5a(2),cir_steane_5a(3),cir_steane_5a(4)])
-
+        elif cir_id == 'a4_L2_split':
+            esm_circuits = []
+            esm_circuits.extend([a4_L2_split(1),cir_steane_5a(2),cir_steane_5a(3),cir_steane_5a(4)])
         return(esm_circuits)
 
 
@@ -205,7 +210,6 @@ def fowler_model(extractor, p1, p2, pm, pI=0):
 
         p, m = [[tp[1:] for tp in timestep if tp[0] == s]
                                  for s in ('P', 'M')]
-
         idles = [tp[1:] for tp in timestep if tp[0] == 'I']
 
         err_list[t].extend([
