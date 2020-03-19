@@ -1,7 +1,6 @@
 import circuit_metric as cm
 import sparse_pauli as sp
 
-from flagbridgeqec.circuits import cir_steane_5a
 from flagbridgeqec.circuits import esmx_anc, esmz_anc, esmxs_anc3, esmzs_anc3, esmxs_anc4, esmzs_anc4
 
 flatten = lambda l: [item for sublist in l for item in sublist]
