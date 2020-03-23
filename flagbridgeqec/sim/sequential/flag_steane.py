@@ -112,8 +112,39 @@ class Steane_FT(object):
         self.fnl_errsx = dict()
         self.fnl_errsz = dict()
 
+    def err_synd_lld(self):
+
+        for key in self.datas:
+            self.fnl_errsx[key] = 0
+            self.fnl_errsz[key] = 0
+        
+        synd_list = ['0'] * self.num_anc*2
+
+        err,synd1 = self.run_first_round()
+        if len(synd1):
+            err, synd2   = self.run_second_round_without_corr(err,synd1)
+        else:
+            synd2 = dict()
+
+        err_fnl = err
+
+
+        for key in err_fnl.x_set:
+            self.fnl_errsx[key] = 1
+        for key in err_fnl.z_set:
+            self.fnl_errsz[key] = 1
+
+        synd_str = self.set_to_list(synd1,synd2,synd_list)
+        fnl_err = np.concatenate((np.fromiter(self.fnl_errsx.values(), dtype=float),np.fromiter(self.fnl_errsz.values(), dtype=float)))
+#        fnl_synd = list(self.synds1.values()) + list(self.synds2.values())
+
+#       fnl_err = list(self.fnl_errsx.values()) + list(self.fnl_errsz.values())
+        
+        return([synd_str,fnl_err])
+    
     def err_synd_parallel(self):
-        # reset all the syndromes and errs to be 0                                                  
+        # reset all the syndromes and errs to be 0                                                 
+
         for key in self.ancillas:
             self.synds1[key] = 0
             self.synds2[key] = 0
@@ -128,7 +159,7 @@ class Steane_FT(object):
 
         if len(synd1):
                 err, synd2,corr   = self.run_second_round(err,synd1)
-
+                
         err_fnl = err
         err *= corr
         # run another perfect round to clean the left errors
@@ -157,6 +188,8 @@ class Steane_FT(object):
         fnl_err = list(self.fnl_errsx.values()) + list(self.fnl_errsz.values())
 
         return np.array(fnl_synd), np.array(fnl_err), err_tp
+
+
     
     def run_lut(self, trials = 1):
 
@@ -186,6 +219,14 @@ class Steane_FT(object):
             self.errors[err_tp] += 1
             
         return self.errors
+
+    def run_lld(self, trials,ds):
+        total_errors = 0
+
+        for trial in range(trials):
+            err_synd = self.err_synd_lld()
+            total_errors =  self.check_for_logical_error(err_synd[1],err_synd[0] ,ds,total_errors)
+        return(total_errors)
 
     def run_hld(self, trials, ds):
         total_errors = 0 
@@ -257,7 +298,17 @@ class Steane_FT(object):
                     # if there is a syndrome or a flag, then stop this round              
                     break
         return(err,synd1)
-
+        
+    def run_second_round_without_corr(self,err,synd1):
+        synd2 = set()
+        for i in range(len(self.esm_circuits)):
+            subcir = self.esm_circuits[i]
+            synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p2,
+                                                     self.pm, self.pI), err, self.ancillas)
+            synd2 |= synd_err[0]
+            err = synd_err[1]
+        return(err, synd2)
+ 
     def run_second_round(self,err,synd1):
         corr = sp.Pauli()
         synd2 = set()
@@ -294,6 +345,39 @@ class Steane_FT(object):
 
         return(synd_str)
 
+    def check_for_logical_error(self,errs, synd,ds,c):
+        errs = errs.ravel()
+        
+        if synd in ds:
+            sample = np.round(ds[synd])
+        else:
+            sample = np.zeros((self.num_data*2))
+    
+        left_errs = (sample+errs)%2
+        syndx_fnl = self.Hx.dot(left_errs)%2
+        syndz_fnl = self.Hz.dot(left_errs)%2
+        errors = self.E.dot(left_errs)%2
+    
+        if np.any(syndx_fnl):
+            if errors[0] == 0:
+                c += 1
+            elif np.any(syndz_fnl):
+                if errors[1] == 0: 
+                    c += 1
+            else:
+                if errors[1]:
+                    c += 1
+
+        elif np.any(syndz_fnl):
+            if errors[1] == 0: 
+                c += 1
+            elif errors[0]:
+                c += 1
+        else:
+            if np.any(errors):
+                c += 1
+        return(c)
+
 
 def circ2err(circ, err_model, err, anc):
     """
@@ -313,6 +397,7 @@ def circ2err(circ, err_model, err, anc):
     err.prep(anc)
 
     return synd, err
+
 
 def fowler_model(extractor, p1, p2, pm, pI=0):
     """
