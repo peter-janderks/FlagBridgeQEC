@@ -112,8 +112,8 @@ class Check_FT(object):
                                         print(lut_flag[flag1][flag_key])
                                         print(err_synds)
                                         raise('Possibly not distingushed syndromes')
-                            else:
-                                pass
+                                    else:
+                                        pass
                 elif synd_r1 & set(self.q_synd):
                     
                     for i in range(len(synd_r2)):

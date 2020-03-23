@@ -1,12 +1,13 @@
 import sparse_pauli as sp
-from check_ft1 import Check_FT
-import check_ft1 as cf
+from flagbridgeqec.circuits import esm2, esm3, esm4, esm5, esm7
+from flagbridgeqec.sim.sequential.check_ft1 import Check_FT
+import flagbridgeqec.sim.sequential.check_ft1 as cf
 from flagbridgeqec.utils import error_model_2 as em
 import circuit_metric as cm
 from operator import mul
 from functools import reduce
 import numpy as np
-from flagbridgeqec.circuits import esmx_anc, esmz_anc, esmxs_anc3, esmzs_anc3, esmxs_anc4, esmzs_anc4
+
 
 product = lambda itrbl: reduce(mul, itrbl)
 
@@ -32,7 +33,6 @@ class Steane_FT(object):
         self.pm = pm
         self.pI = self.p1*ridle
         # self.ancillas = [8, 9, 10, 11, 12, 13, 14, 80, 90, 100, 110, 120, 130, 140]
-        print(cir_id)
         if cir_id == 'c1_l1' or cir_id == 'c1_l2':
             if cir_id == 'c1_l1':
                 self.esm_circuits = esm2(idling)
@@ -112,9 +112,8 @@ class Steane_FT(object):
         self.fnl_errsx = dict()
         self.fnl_errsz = dict()
 
-
-    def err_synd(self):
-        # reset all the syndromes and errs to be 0
+    def err_synd_parallel(self):
+        # reset all the syndromes and errs to be 0                                                  
         for key in self.ancillas:
             self.synds1[key] = 0
             self.synds2[key] = 0
@@ -122,131 +121,93 @@ class Steane_FT(object):
             self.fnl_errsx[key] = 0
             self.fnl_errsz[key] = 0
 
-        err = sp.Pauli()
         corr = sp.Pauli()
-        synd1 = set()
         synd2 = set()
-        for i in range(len(self.esm_circuits)):
-            subcir = self.esm_circuits[i]
-            s_e = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, pI=0), err, self.ancillas)
-            synd1 |= s_e[0]
-            err = s_e[1]
-            if len(synd1):
-                # if there is a syndrome or a flag, then stop this round
-                break
-        # if there is a syndrome or a flag, after stop this round, start a full new round for all stabs
-        
+
+        err,synd1 = self.run_first_round()
+
         if len(synd1):
-            for i in range(len(self.esm_circuits)):
-                subcir = self.esm_circuits[i]
-                s_e = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, pI=0), err, self.ancillas)
-                synd2 |= s_e[0]
-                err = s_e[1]
+                err, synd2,corr   = self.run_second_round(err,synd1)
 
-        # for key in synd1:
-        if len(synd1 & set(self.q_flag)):
-            for key in synd1 & set(self.q_flag):
-                self.synds1[key] = 1
-        for key in synd2:
-            self.synds2[key] = 1
-
-        for key in err.x_set:
-            self.fnl_errsx[key] = 1
-        for key in err.z_set:
-            self.fnl_errsz[key] = 1
-
-        fnl_synd = list(self.synds1.values()) + list(self.synds2.values())
-        fnl_err = list(self.fnl_errsx.values()) + list(self.fnl_errsz.values())
-
-        return np.array(fnl_synd), np.array(fnl_err)
-
-
-    def err_synd2(self):
-        # reset all the syndromes and errs to be 0
-        for key in self.ancillas:
-            self.synds1[key] = 0
-            self.synds2[key] = 0
-        for key in self.datas:
-            self.fnl_errsx[key] = 0
-            self.fnl_errsz[key] = 0
-
-        err = sp.Pauli()
-        corr = sp.Pauli()
-        synd1 = set()
-        synd2 = set()
+        err_fnl = err
+        err *= corr
+        # run another perfect round to clean the left errors
+        synd_fnl = set()
         for i in range(len(self.esm_circuits)):
             subcir = self.esm_circuits[i]
-            s_e = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, pI=0), err, self.ancillas)
-            synd1 |= s_e[0]
-            err = s_e[1]
-            
-        for i in range(len(self.esm_circuits)):
-            subcir = self.esm_circuits[i]
-            s_e = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, pI=0), err, self.ancillas)
-            synd2 |= s_e[0]
-            err = s_e[1]
+            synd_err = circ2err(subcir, fowler_model(subcir, 0, 0, 0), err, self.ancillas)
+            synd_fnl |= synd_err[0]
+            err = synd_err[1]
+        err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndx)))]
+        err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndz)))]
 
+        err_tp = singlelogical_error_index(err, self.init_logs)
+    
         for key in synd1:
             self.synds1[key] = 1
         for key in synd2:
             self.synds2[key] = 1
 
-        for key in err.x_set:
+        for key in err_fnl.x_set:
             self.fnl_errsx[key] = 1
-        for key in err.z_set:
+        for key in err_fnl.z_set:
             self.fnl_errsz[key] = 1
 
         fnl_synd = list(self.synds1.values()) + list(self.synds2.values())
         fnl_err = list(self.fnl_errsx.values()) + list(self.fnl_errsz.values())
 
-        return np.array(fnl_synd), np.array(fnl_err)
-
-
-    def run(self, trials = 1):
+        return np.array(fnl_synd), np.array(fnl_err), err_tp
+    
+    def run_lut(self, trials = 1):
 
         for trial in range(trials):
-            err = sp.Pauli()
             corr = sp.Pauli()
-            synd1 = set()
             synd2 = set()
-            for i in range(len(self.esm_circuits)):
-                subcir = self.esm_circuits[i]
-                synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, self.pI), err, self.ancillas)
-                synd1 |= synd_err[0]
-                err = synd_err[1]
-                if len(synd1):
-                    # if there is a syndrome or a flag, then stop this round
-                    break
-            # if there is a syndrome or a flag, after stop this round, start a full new round for all stabs
-            if len(synd1):
-                for i in range(len(self.esm_circuits)):
-                    subcir = self.esm_circuits[i]
-                    synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, self.pI), err, self.ancillas)
-                    synd2 |= synd_err[0]
-                    err = synd_err[1]
-                # Choose lut decoder based on whether there is a flag, then find corrections
-                flag_qs = synd1 & set(self.q_flag)
-                synd_qx = sorted(synd2 & set(self.q_syndx))
-                synd_qz = sorted(synd2 & set(self.q_syndz))
-                if len(flag_qs):
-                    # print(self.lut_flag)
-                    # print(flag_qs)
-                    # print(len(self.lut_flag))
-                    # print( self.lut_flag[tuple(flag_qs)].keys())
-                    # print(tuple(synd_qx))
-                    # print(tuple(synd_qz))
-                    corr *= self.lut_flag[tuple(flag_qs)][tuple(synd_qx)]
-                    corr *= self.lut_flag[tuple(flag_qs)][tuple(synd_qz)]
-                else:
-                    # print(self.lut_synd.keys())
-                    # print(tuple(synd_qx))
-                    # print(tuple(synd_qz))
-                    corr *= self.lut_synd[tuple(synd_qz)]
-                    corr *= self.lut_synd[tuple(synd_qx)]
+            err,synd1 = self.run_first_round()
+            if len(synd1): 
+                err, synd2,corr   = self.run_second_round(err,synd1)
 
             err_fnl = err
             err *= corr
+
             # run another perfect round to clean the left errors
+            synd_fnl = set()
+            for i in range(len(self.esm_circuits)):
+                subcir = self.esm_circuits[i]
+                synd_err = circ2err(subcir, fowler_model(subcir, 0, 0, 0), err, self.ancillas)
+                synd_fnl |= synd_err[0]
+                err = synd_err[1]
+
+            err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndx)))]
+            err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndz)))]
+
+            # # check logical errors
+            err_tp = singlelogical_error(err, self.init_logs)
+            self.errors[err_tp] += 1
+            
+        return self.errors
+
+    def run_hld(self, trials, ds):
+        total_errors = 0 
+        for trial in range(trials):
+
+            for key in self.datas:
+                self.fnl_errsx[key] = 0
+                self.fnl_errsz[key] = 0
+            
+            synd_list = ['0'] * self.num_anc*2
+            corr = sp.Pauli()
+
+            err,synd1 = self.run_first_round()
+            if len(synd1):
+                err, synd2,corr   = self.run_second_round(err,synd1)
+            else:
+                synd2 = dict()
+
+            err_fnl = err
+            err *= corr
+
+            # run another perfect round to clean the left errors                                   
             synd_fnl = set()
             for i in range(len(self.esm_circuits)):
                 subcir = self.esm_circuits[i]
@@ -256,24 +217,83 @@ class Steane_FT(object):
             err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndx)))]
             err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndz)))]
 
-            # print(self.lut_synd)
-            # print(synd_fnl)
-            # # check logical errors
-            # print(err)
-            err_tp = singlelogical_error(err, self.init_logs)
-            # if err_tp != 'I':
-            #     # print(self.lut_flag, self.lut_synd)
-            #     print('synds are')
-            #     print(synd1, synd2)
-            #     print('fnl errors are', err_fnl)
-            #     print('err is', err)
-            #     print('corr is', corr)
-            #     # break
-            self.errors[err_tp] += 1
+            # # check logical errors                                                    
+            err_tp = singlelogical_error_index(err, self.init_logs)
+            
+            for key in err_fnl.x_set:
+                self.fnl_errsx[key] = 1
+            for key in err_fnl.z_set:
+                self.fnl_errsz[key] = 1
+            
+            if err_fnl != sp.str_pauli('I'):
+                synd_str = self.set_to_list(synd1,synd2,synd_list)
+                if synd_str in ds:
+                    if err_tp != np.argmax(ds[synd_str]):
+                        total_errors +=1
+                else:
+                    total_errors +=1
+                
+            elif (len(synd1)+len(synd2)) != 0:
+                synd_str = self.set_to_list(synd1,synd2,synd_list)
+                if synd_str in ds:
+                    if err_tp != np.argmax(ds[synd_str]):
+                        total_errors +=1
+                    elif err_fnl != sp.str_pauli('I'):
+                        total_errors +=1
 
-        return self.errors
+        return(total_errors)
 
-                            
+
+    def run_first_round(self):
+        err = sp.Pauli()
+        synd1 = set()
+        for i in range(len(self.esm_circuits)):
+                subcir = self.esm_circuits[i]
+                synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, 
+                                                         self.pI), err, self.ancillas)
+                synd1 |= synd_err[0]
+                err = synd_err[1]
+                if len(synd1):
+                    # if there is a syndrome or a flag, then stop this round              
+                    break
+        return(err,synd1)
+
+    def run_second_round(self,err,synd1):
+        corr = sp.Pauli()
+        synd2 = set()
+        for i in range(len(self.esm_circuits)):
+            subcir = self.esm_circuits[i]
+            synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, 
+                                                     self.pm, self.pI), err, self.ancillas)
+            synd2 |= synd_err[0]
+            err = synd_err[1]
+                
+        # Choose lut decoder based on whether there is a flag, then find corrections
+        flag_qs = synd1 & set(self.q_flag)
+        synd_qx = sorted(synd2 & set(self.q_syndx))
+        synd_qz = sorted(synd2 & set(self.q_syndz))
+        if len(flag_qs):
+            corr *= self.lut_flag[tuple(flag_qs)][tuple(synd_qx)]
+            corr *= self.lut_flag[tuple(flag_qs)][tuple(synd_qz)]
+        else:
+            corr *= self.lut_synd[tuple(synd_qz)]
+            corr *= self.lut_synd[tuple(synd_qx)]
+        
+        return(err, synd2,corr)
+        
+    def set_to_list(self,synd1,synd2,synd_list):
+        for i in range(self.num_anc):
+            if self.ancillas[i] in synd1:
+                synd_list[i] = '1'
+
+        for j in range(self.num_anc):
+            if self.ancillas[j] in synd2:
+                synd_list[j] = '1'
+
+        synd_str = ''.join(synd_list)
+
+        return(synd_str)
+
 
 def circ2err(circ, err_model, err, anc):
     """
@@ -293,71 +313,6 @@ def circ2err(circ, err_model, err, anc):
     err.prep(anc)
 
     return synd, err
-
-
-def esm2(idling=False):
-    """
-    syndrome extractor circuit for steane circuit 2, two ancillas per face, 6 checks in series
-    """
-    cirs = []
-    cirs.append(cf.esmx_anc([4,5,6,7], [12, 13], idling=idling))
-    cirs.append(cf.esmx_anc([1,2,4,5], [8, 9], idling=idling))
-    cirs.append(cf.esmx_anc([1,3,4,7], [10, 11], idling=idling))
-    cirs.append(cf.esmz_anc([4,5,6,7], [120, 130], idling=idling))
-    # cirs.append(esmz_anc([4,5,6,7], [12, 13, 14], idling=idling)
-    cirs.append(cf.esmz_anc([1,2,4,5], [80, 90], idling=idling))
-    cirs.append(cf.esmz_anc([1,3,4,7], [100, 110], idling=idling))
-    return cirs
-    
-
-def esm3(idling=False):
-    """
-    syndrome extractor circuit for steane circuit 2, two ancillas per face, 6 checks in series
-    """
-    cirs = []
-    cirs.append(cf.esmx_anc([4,5,6,7], [12, 13], idling=idling, db=3))
-    cirs.append(cf.esmx_anc([1,2,4,5], [8, 9], idling=idling))
-    cirs.append(cf.esmx_anc([1,3,4,7], [10, 11], idling=idling))
-    cirs.append(cf.esmz_anc([4,5,6,7], [120, 130], idling=idling, db=3))
-    cirs.append(cf.esmz_anc([1,2,4,5], [80, 90], idling=idling))
-    cirs.append(cf.esmz_anc([1,3,4,7], [100, 110], idling=idling))
-    return cirs
-
-
-def esm4(idling=False):
-    """
-    syndrome extractor circuit for steane circuit 5, two checks in parallel
-    """
-    cirs = []
-    cirs.append(cf.esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9], idling=idling))
-    cirs.append(cf.esmx_anc([4,5,6,7], [12, 13, 14], idling=idling))
-    cirs.append(cf.esmzs_anc3( [3,7,2,5], [3,7,1,4], [80, 100, 90], idling=idling))
-    cirs.append(cf.esmz_anc([4,5,6,7], [120, 130, 140], idling=idling))
-
-    return cirs
-
-
-def esm5(idling=False):
-    """
-    syndrome extractor circuit for steane circuit 5, two checks in parallel
-    """
-    cirs = []
-    cirs.append(cf.esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9], idling=idling))
-    cirs.append(cf.esmx_anc([4,5,6,7], [13, 12], idling=idling))
-    cirs.append(cf.esmzs_anc3( [3,7,2,5], [3,7,1,4], [80, 100, 90], idling=idling))
-    cirs.append(cf.esmz_anc([4,5,6,7], [120, 130], idling=idling))
-
-    return cirs
-
-def esm7(idling=False):
-    """
-    syndrome extractor circuit for steane circuit 5, two checks in parallel
-    """
-    cirs = []
-    cirs.append(cf.esmxs_anc4([4,1,5,2], [4,1,3,7], [4,5,6,7], [8, 10, 12, 9], chao=False, idling=idling))
-    cirs.append(cf.esmzs_anc4([4,1,5,2], [4,1,3,7], [4,5,6,7], [80, 100, 120, 90], chao=False, idling=idling))
-
-    return cirs
 
 def fowler_model(extractor, p1, p2, pm, pI=0):
     """
@@ -406,12 +361,34 @@ def singlelogical_error(err_fnl, corr_logs):
 
     return anticom_dict[ ( x_com, z_com ) ]
 
+def singlelogical_error_index(err_fnl, corr_logs):
+    """
+    returns a single letter recording the resulting logical error (may be I,
+    X, Y or Z)
+    """
+    x_log = corr_logs[0]
+    z_log = corr_logs[1]
+    anticom_dict = {
+        (0, 0): 0,
+        (0, 1): 1,
+        (1, 0): 2,
+        (1, 1): 3,
+    }
+    x_com, z_com = x_log.com(err_fnl), z_log.com(err_fnl)
 
-def check(p1, p2, pm, cir_id, trials, idling=False, ridle=0):
+    return anticom_dict[ ( x_com, z_com ) ]
+
+
+def check_lut(p1, p2, pm, cir_id, trials, idling=False, ridle=0):
     x = Steane_FT(p1, p2, pm, cir_id, idling=idling, ridle=ridle)
-    err = x.run(trials)
+    err = x.run_lut(trials)
+    return err
+
+def check_hld(p1, p2, pm, cir_id, trials, idling, ridle, ds):
+    x = Steane_FT(p1, p2, pm, cir_id, idling=idling, ridle=ridle)
+    err = x.run_hld(trials,ds)
     return err
 
 if __name__ == '__main__':
-    err = check(0.001, 0.001, 0.001, 7, 10, idling=False, ridle=0)
+    err = check_lut(0.001, 0.001, 0.001, 'c1_l2', 1000, idling=False, ridle=0)
     print(err)
