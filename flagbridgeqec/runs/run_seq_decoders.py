@@ -107,6 +107,7 @@ def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld,
     plt.ylabel("Physical error rate")
     plt.title(str(cir_id) + '$p_I = $ ' + str(ridle))
     plt.grid(True)
+    plt.legend()
     tikzplotlib.save("plots/test.tex")
 
 def write_data_to_file(file,ler_m,conf_int_a):
