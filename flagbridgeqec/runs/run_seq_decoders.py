@@ -98,17 +98,17 @@ def std(mean):
     return np.sqrt(dev)
 
 def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld, 
-                interval_lld,cir_id,ridle):
+                interval_lld,cir_id,ridle,name):
     plt.style.use("ggplot")
-    plt.errorbar(per, lers_lut,yerr=interval_lut,label='lut')
-    plt.errorbar(per, lers_hld,yerr=interval_hld,label='hld')
-    plt.errorbar(per, lers_lld,yerr=interval_lld,label='lld')
+    lut = plt.errorbar(per, lers_lut,yerr=interval_lut,label='lut')
+    hld = plt.errorbar(per, lers_hld,yerr=interval_hld,label='hld')
+    lld =plt.errorbar(per, lers_lld,yerr=interval_lld,label='lld')
     plt.xlabel("Logical error rate")
     plt.ylabel("Physical error rate")
     plt.title(str(cir_id) + '$p_I = $ ' + str(ridle))
     plt.grid(True)
-    plt.legend()
-    tikzplotlib.save("plots/test.tex")
+    plt.legend((lut,hld,lld))
+    tikzplotlib.save("plots/" + name +".tex")
 
 def write_data_to_file(file,ler_m,conf_int_a):
     of = open(file, 'a')
@@ -225,6 +225,7 @@ if __name__ == '__main__':
     of.write('\n')  
     of.close()
 
+    plot_name = 'cir_id' + str(cir_id) + 'pI' + str(ridle)
     create_plot(errs,lers_lut,intervals_lut,lers_hld,intervals_hld,
-                lers_lld, intervals_lld, cir_id,ridle)
+                lers_lld, intervals_lld, cir_id,ridle,plot_name)
     
