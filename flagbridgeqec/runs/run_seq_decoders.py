@@ -100,14 +100,16 @@ def std(mean):
 def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld, 
                 interval_lld,cir_id,ridle,name):
     plt.style.use("ggplot")
-    lut = plt.errorbar(per, lers_lut,yerr=interval_lut,label='lut')
-    hld = plt.errorbar(per, lers_hld,yerr=interval_hld,label='hld')
-    lld =plt.errorbar(per, lers_lld,yerr=interval_lld,label='lld')
-    plt.xlabel("Logical error rate")
-    plt.ylabel("Physical error rate")
-    plt.title(str(cir_id) + '$p_I = $ ' + str(ridle))
-    plt.grid(True)
-    plt.legend((lut,hld,lld))
+    fig, host = plt.subplots()
+
+    lut = host.errorbar(per, lers_lut,yerr=interval_lut,label='lut')
+    hld = host.errorbar(per, lers_hld,yerr=interval_hld,label='hld')
+    lld = host.errorbar(per, lers_lld,yerr=interval_lld,label='lld')
+    host.set_xlabel("Logical error rate")
+    host.set_ylabel("Physical error rate")
+    host.set_title(str(cir_id) + '$p_I = $ ' + str(ridle))
+    host.grid(True)
+    host.legend([lut,hld,lld],loc='upper left')
     tikzplotlib.save("plots/" + name +".tex")
 
 def write_data_to_file(file,ler_m,conf_int_a):
