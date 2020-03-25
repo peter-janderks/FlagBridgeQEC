@@ -237,6 +237,7 @@ class Steane_FT(object):
                 self.fnl_errsz[key] = 0
             
             synd_list = ['0'] * self.num_anc*2
+            synd_zeros = '0' * self.num_anc*2
             corr = sp.Pauli()
 
             err,synd1 = self.run_first_round()
@@ -265,22 +266,14 @@ class Steane_FT(object):
                 self.fnl_errsx[key] = 1
             for key in err_fnl.z_set:
                 self.fnl_errsz[key] = 1
-            
-            if err_fnl != sp.str_pauli('I'):
-                synd_str = self.set_to_list(synd1,synd2,synd_list)
-                if synd_str in ds:
-                    if err_tp != np.argmax(ds[synd_str]):
-                        total_errors +=1
-                else:
-                    total_errors +=1
-                
-            elif (len(synd1)+len(synd2)) != 0:
-                synd_str = self.set_to_list(synd1,synd2,synd_list)
-                if synd_str in ds:
-                    if err_tp != np.argmax(ds[synd_str]):
-                        total_errors +=1
-                    elif err_fnl != sp.str_pauli('I'):
-                        total_errors +=1
+ 
+            synd_str = self.set_to_list(synd1,synd2,synd_list) 
+            if synd_str != synd_zeros:
+                if synd_str in ds:                                                                 
+                    if err_tp != np.argmax(ds[synd_str]):                                          
+                        total_errors +=1                                                           
+                elif err_tp != 0:
+                    total_errors +=1  
 
         return(total_errors)
 

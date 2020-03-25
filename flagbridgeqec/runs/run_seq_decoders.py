@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # Based on the gate choice, import the function
     file_lut = 'data/lut' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
     file_hld = 'data/hld' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
-    file_lld = 'data/hld' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
+    file_lld = 'data/lld' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
 
     lers_lut = []
     intervals_lut = np.zeros((2,len(errs)))
@@ -211,6 +211,7 @@ if __name__ == '__main__':
         
         write_data_to_file(file_lut,ler_m,conf_int_lut)
         write_data_to_file(file_hld,rst_hld,conf_int_hld)
+        write_data_to_file(file_lld,rst_lld,conf_int_lld)
 
     of = open(file_lut, 'a')
     of.write('PER')
