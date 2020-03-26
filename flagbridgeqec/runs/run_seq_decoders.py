@@ -100,24 +100,24 @@ def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld,
     fig, host = plt.subplots()
 
     interval =  (stats.norm.interval(0.999, loc=lers_lut, scale=std(lers_lut)/float(np.sqrt(trials))))
-    interval_lut  = lers_lut - interval[0]
+    interval_lut  = interval[1] - lers_lut
 
     interval = (stats.norm.interval(0.999, loc=lers_lld, scale=std(lers_lld)/float(np.sqrt(trials))))
-    interval_lld = lers_lld - interval[0]
+    interval_lld = interval[1] - lers_lld
 
     interval = (stats.norm.interval(0.999, loc=lers_hld, scale=std(lers_hld)/float(np.sqrt(trials))))
-    interval_lld = lers_hld - interval[0]
+    interval_lld = interval[1] - lers_hld
 
-    lut = host.errorbar(per, lers_lut,yerr=interval_lut,label='lut')
-    hld = host.errorbar(per, lers_hld,yerr=interval_hld,label='hld')
-    lld = host.errorbar(per, lers_lld,yerr=interval_lld,label='lld')
+    lut = host.errorbar(per, lers_lut,yerr=interval_lut,label='lut',capsize=10)
+    hld = host.errorbar(per, lers_hld,yerr=interval_hld,label='hld',capsize=10)
+    lld = host.errorbar(per, lers_lld,yerr=interval_lld,label='lld',capsize=10)
 
     host.set_xlabel("Logical error rate")
     host.set_ylabel("Physical error rate")
     host.set_title(str(cir_id) + '$p_I = $ ' + str(ridle))
     host.grid(True)
-#    host.legend([lut,hld,lld],loc='upper left')
-    tikzplotlib.save("plots/" + name +"test.tex")
+    host.legend([lut,hld,lld],loc='upper left')
+    tikzplotlib.save("plots/" + name +"test_again.tex")
 
 def write_data_to_file(file,ler_m,conf_int_a):
     of = open(file, 'a')
