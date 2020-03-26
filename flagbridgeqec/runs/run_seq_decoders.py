@@ -50,7 +50,7 @@ def lut_decoder(trials, qeccode,cpus):
 def hld_decoder(trials,qeccode,ds,cpus):
     mp.freeze_support()
     pool = mp.Pool()
-#    cpus = mp.cpu_count()
+
     results = []
     for i in range(0, cpus):
         result = pool.apply_async(task_hld, args=(i, qeccode, trials, ds))
@@ -90,17 +90,22 @@ def lld_decoder(trials, qeccode, ds, cpus):
     total_err = total_err/(trials*cpus)
     return(total_err)
 
-
-
-
 def std(mean):
     dev = (1-mean)*(mean**2) + mean*((1-mean)**2)
     return np.sqrt(dev)
 
 def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld, 
-                interval_lld,cir_id,ridle,name):
+                interval_lld,cir_id,ridle,name,trials):
     plt.style.use("ggplot")
     fig, host = plt.subplots()
+    interval =  (stats.norm.interval(0.999, loc=lers_lut, scale=std(lers_lut/float(np.sqrt(trials)))))
+    interval_lut  = lers_lut - interval[0]
+
+    interval = (stats.norm.interval(0.999, loc=lers_lld, scale=std(lers_lld/float(np.sqrt(trials)))))
+    interval_lld = lers_lld - interval[0]
+
+    interval = (stats.norm.interval(0.999, loc=lers_hld, scale=std(lers_hld)/float(np.sqrt(trials))))
+    interval_lld = lers_hld - interval[0]
 
     lut = host.errorbar(per, lers_lut,yerr=interval_lut,label='lut')
     hld = host.errorbar(per, lers_hld,yerr=interval_hld,label='hld')
@@ -110,7 +115,7 @@ def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld,
     host.set_title(str(cir_id) + '$p_I = $ ' + str(ridle))
     host.grid(True)
     host.legend([lut,hld,lld],loc='upper left')
-    tikzplotlib.save("plots/" + name +".tex")
+    tikzplotlib.save("plots/" + name +"test.tex")
 
 def write_data_to_file(file,ler_m,conf_int_a):
     of = open(file, 'a')
@@ -149,17 +154,17 @@ if __name__ == '__main__':
     errs = np.linspace(err_lo, err_hi, n_point)
 
     # Based on the gate choice, import the function
-    file_lut = 'data/lut' + 'cir' + str(cir_id)+ '_' + +str(ridle) + str(nm) + '.txt'
+    file_lut = 'data/lut' + 'cir' + str(cir_id)+ '_' + str(ridle) + str(nm) + '.txt'
     file_hld = 'data/hld' + 'cir' + str(cir_id)+ '_' + str(ridle) + str(nm) + '.txt'
     file_lld = 'data/lld' + 'cir' + str(cir_id)+ '_' + str(ridle) + str(nm) + '.txt'
 
-    lers_lut = []
+    lers_lut = np.empty(shape=(n_point))
     intervals_lut = np.zeros((2,len(errs)))
 
-    lers_hld = []
+    lers_hld = np.empty(shape=(n_point))
     intervals_hld = np.zeros((2,len(errs)))
 
-    lers_lld = []
+    lers_lld = np.empty(shape=(n_point))
     intervals_lld = np.zeros((2,len(errs)))
 
     hld_dataset_file = 'cir_id_' + str(cir_id) + '/hld_' + str(ridle) + 'dataset.txt'
@@ -192,21 +197,20 @@ if __name__ == '__main__':
         ler_m = 1 - float(corr) / float(total)
         sigma = std(ler_m) / float(np.sqrt(total))
         conf_int_lut = stats.norm.interval(confidence, loc=ler_m, scale=sigma)
-        lers_lut.append(ler_m)
+        lers_lut[i] = ler_m
         intervals_lut[0][i] = conf_int_lut[0]
         intervals_lut[1][i] = conf_int_lut[1]
         print(ler_m,'ler_m')
         print(conf_int_lut,'conf_int_lut')
         rst_hld = hld_decoder(trials, qeccode, hld_ds,cpus)
-        lers_hld.append(rst_hld)
+        lers_hld[i] = rst_hld
         conf_int_hld = stats.norm.interval(confidence, loc=rst_hld, scale=sigma)
         intervals_hld[0][i] = conf_int_hld[0]
         intervals_hld[1][i] = conf_int_hld[1]
 
         rst_lld = lld_decoder(trials, qeccode, lld_ds,cpus)
-        lers_lld.append(rst_lld)
-        conf_int_lld = stats.norm.interval(confidence, loc=rst_lld, scale=sigma\
-)
+        lers_lld[i] = rst_lld
+        conf_int_lld = stats.norm.interval(confidence, loc=rst_lld, scale=sigma)
         intervals_lld[0][i] = conf_int_lld[0]
         intervals_lld[1][i] = conf_int_lld[1]
         
@@ -231,5 +235,5 @@ if __name__ == '__main__':
 
     plot_name = 'cir_id' + str(cir_id) + 'pI' + str(ridle)
     create_plot(errs,lers_lut,intervals_lut,lers_hld,intervals_hld,
-                lers_lld, intervals_lld, cir_id,ridle,plot_name)
+                lers_lld, intervals_lld, cir_id,ridle,plot_name,total)
     
