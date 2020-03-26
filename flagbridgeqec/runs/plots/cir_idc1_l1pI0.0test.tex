@@ -19,62 +19,47 @@ xtick style={color=white!33.3333333333333!black},
 y grid style={white},
 ylabel={Physical error rate},
 ymajorgrids,
-ymin=-0.00471583448023164, ymax=0.0187577868077876,
+ymin=-0.000111743159131897, ymax=0.0126791214662427,
 ytick style={color=white!33.3333333333333!black}
 ]
 \path [draw=color0, semithick]
-(axis cs:0.001,-0.00264885169441259)
---(axis cs:0.001,0.00664885169441259);
+(axis cs:0.001,0.000529904014132316)
+--(axis cs:0.001,0.00347009598586769);
 
 \path [draw=color0, semithick]
-(axis cs:0.0015,-0.00264885169441259)
---(axis cs:0.0015,0.00664885169441259);
-
-\path [draw=color0, semithick]
-(axis cs:0.002,-0.00269080402196845)
---(axis cs:0.002,0.00869080402196845);
+(axis cs:0.002,0.0026022814712744)
+--(axis cs:0.002,0.00719771852872563);
 
 \path [draw=color1, semithick]
-(axis cs:0.001,0.00464885169441259)
---(axis cs:0.001,0.00864885169441264);
+(axis cs:0.001,0.00147009598586769)
+--(axis cs:0.001,0.0042700959858677);
 
 \path [draw=color1, semithick]
-(axis cs:0.0015,0.00464885169441259)
---(axis cs:0.0015,0.00664885169441264);
-
-\path [draw=color1, semithick]
-(axis cs:0.002,0.00569080402196845)
---(axis cs:0.002,0.0176908040219685);
+(axis cs:0.002,0.00229771852872561)
+--(axis cs:0.002,0.0120977185287256);
 
 \path [draw=color2, semithick]
-(axis cs:0.001,-0.00364885169441259)
---(axis cs:0.001,0.00564885169441259);
+(axis cs:0.001,0.000469659778385128)
+--(axis cs:0.001,0.00293034022161487);
 
 \path [draw=color2, semithick]
-(axis cs:0.0015,0.00171111894339548)
---(axis cs:0.0015,0.00828888105660452);
-
-\path [draw=color2, semithick]
-(axis cs:0.002,0.000964105237011093)
---(axis cs:0.002,0.0170358947629889);
+(axis cs:0.002,0.00280228147127439)
+--(axis cs:0.002,0.00739771852872561);
 
 \addplot [semithick, color0]
 table {%
 0.001 0.002
-0.0015 0.002
-0.002 0.003
+0.002 0.00490000000000002
 };
 \addplot [semithick, color1]
 table {%
-0.001 0.002
-0.0015 0.001
-0.002 0.006
+0.001 0.0014
+0.002 0.0049
 };
 \addplot [semithick, color2]
 table {%
-0.001 0.001
-0.0015 0.005
-0.002 0.009
+0.001 0.0017
+0.002 0.0051
 };
 \end{axis}
 
