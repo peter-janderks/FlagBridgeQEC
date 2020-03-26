@@ -106,7 +106,7 @@ def create_plot(per,lers_lut,interval_lut,lers_hld,interval_hld,lers_lld,
     interval_lld = interval[1] - lers_lld
 
     interval = (stats.norm.interval(0.999, loc=lers_hld, scale=std(lers_hld)/float(np.sqrt(trials))))
-    interval_lld = interval[1] - lers_hld
+    interval_hld = interval[1] - lers_hld
 
     lut = host.errorbar(per, lers_lut,yerr=interval_lut,label='lut',capsize=10)
     hld = host.errorbar(per, lers_hld,yerr=interval_hld,label='hld',capsize=10)
