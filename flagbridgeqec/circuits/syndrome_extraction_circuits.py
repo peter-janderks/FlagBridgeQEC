@@ -61,7 +61,6 @@ def esmx_anc(data_set, anc_set, db=2, idling=False):
 
     else:
         raise('Only support one or two ancillas for parity checks')
-    
     if idling:
         timesteps = add_idling(timesteps, anc_set, data_set=[1,2,3,4,5,6,7])
     return(timesteps)

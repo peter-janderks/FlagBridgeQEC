@@ -7,10 +7,10 @@ def esm2(idling=False):
     checks in series      
     """
     cirs = []
-    cirs.append(esmx_anc([4,5,6,7], [12, 13], idling=idling))
+    cirs.append(esmx_anc([4,5,6,7], [12, 13], db=3, idling=idling))
     cirs.append(esmx_anc([1,2,4,5], [8, 9], idling=idling))
     cirs.append(esmx_anc([1,3,4,7], [10, 11], idling=idling))
-    cirs.append(esmz_anc([4,5,6,7], [120, 130], idling=idling))
+    cirs.append(esmz_anc([4,5,6,7], [120, 130],  db=3, idling=idling))
     cirs.append(esmz_anc([1,2,4,5], [80, 90], idling=idling))
     cirs.append(esmz_anc([1,3,4,7], [100, 110], idling=idling))
     return cirs

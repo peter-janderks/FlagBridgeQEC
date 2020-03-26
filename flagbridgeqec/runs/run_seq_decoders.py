@@ -149,9 +149,9 @@ if __name__ == '__main__':
     errs = np.linspace(err_lo, err_hi, n_point)
 
     # Based on the gate choice, import the function
-    file_lut = 'data/lut' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
-    file_hld = 'data/hld' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
-    file_lld = 'data/lld' + 'cir' + str(cir_id)+ '_' + str(nm) + '.txt'
+    file_lut = 'data/lut' + 'cir' + str(cir_id)+ '_' + +str(ridle) + str(nm) + '.txt'
+    file_hld = 'data/hld' + 'cir' + str(cir_id)+ '_' + str(ridle) + str(nm) + '.txt'
+    file_lld = 'data/lld' + 'cir' + str(cir_id)+ '_' + str(ridle) + str(nm) + '.txt'
 
     lers_lut = []
     intervals_lut = np.zeros((2,len(errs)))
@@ -186,7 +186,7 @@ if __name__ == '__main__':
                             idling, ridle)
         # run the simulation
         rst = lut_decoder(trials,qeccode,cpus)
-
+        print(rst)
         corr = rst['I']
         total = rst['I'] + rst['Y'] + rst['X'] + rst['Z']
         ler_m = 1 - float(corr) / float(total)
@@ -195,7 +195,8 @@ if __name__ == '__main__':
         lers_lut.append(ler_m)
         intervals_lut[0][i] = conf_int_lut[0]
         intervals_lut[1][i] = conf_int_lut[1]
-
+        print(ler_m,'ler_m')
+        print(conf_int_lut,'conf_int_lut')
         rst_hld = hld_decoder(trials, qeccode, hld_ds,cpus)
         lers_hld.append(rst_hld)
         conf_int_hld = stats.norm.interval(confidence, loc=rst_hld, scale=sigma)

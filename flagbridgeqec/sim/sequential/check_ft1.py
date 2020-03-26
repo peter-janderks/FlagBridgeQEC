@@ -364,7 +364,7 @@ def check(cir_index='c2_l1', steane=True):
     return err
 
 if __name__ == '__main__':
-    x = Check_FT(cir_index='c3_l2', steane=True)
+    x = Check_FT(cir_index='c1_l1', steane=True)
     x.lut_gen()
     err = check()
     if err:
