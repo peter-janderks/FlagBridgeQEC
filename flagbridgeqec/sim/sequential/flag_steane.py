@@ -136,9 +136,6 @@ class Steane_FT(object):
 
         synd_str = self.set_to_list(synd1,synd2,synd_list)
         fnl_err = np.concatenate((np.fromiter(self.fnl_errsx.values(), dtype=float),np.fromiter(self.fnl_errsz.values(), dtype=float)))
-#        fnl_synd = list(self.synds1.values()) + list(self.synds2.values())
-
-#       fnl_err = list(self.fnl_errsx.values()) + list(self.fnl_errsz.values())
         
         return([synd_str,fnl_err])
     
@@ -296,7 +293,7 @@ class Steane_FT(object):
 
         for trial in range(trials):
             err_synd = self.err_synd_lld()
-            total_errors =  self.check_for_logical_error(err_synd[1],err_synd[0] ,ds,total_errors)
+            total_errors =  self.check_for_logical_error(err_synd[1],err_synd[0],ds,total_errors)
         return(total_errors)
 
     def run_hld(self, trials, ds):
@@ -313,7 +310,7 @@ class Steane_FT(object):
 
             err,synd1 = self.run_first_round()
             if len(synd1):
-                err, synd2,corr   = self.run_second_round(err,synd1)
+                err, synd2,corr = self.run_second_round(err,synd1)
             else:
                 synd2 = dict()
 
@@ -343,10 +340,11 @@ class Steane_FT(object):
                 if synd_str in ds:                                                                 
                     if err_tp != np.argmax(ds[synd_str]):                                          
                         total_errors +=1                                                           
-
+#                    print('in dataset')
                 elif err_tp != 0:
                     total_errors +=1  
-
+                    print('not in dataset')
+                    print(synd_str,'synd_str')
         return(total_errors)
 
 
@@ -405,8 +403,8 @@ class Steane_FT(object):
 
         for j in range(self.num_anc):
             if self.ancillas[j] in synd2:
-                synd_list[j] = '1'
-
+                synd_list[j+self.num_anc] = '1'
+        
         synd_str = ''.join(synd_list)
 
         return(synd_str)
@@ -419,7 +417,7 @@ class Steane_FT(object):
             sample = np.round(ds[synd])
         else:
             sample = np.zeros((self.num_data*2))
-    
+            print('not_in_dataset')
         left_errs = (sample+errs)%2
         syndx_fnl = self.Hx.dot(left_errs)%2
         syndz_fnl = self.Hz.dot(left_errs)%2
