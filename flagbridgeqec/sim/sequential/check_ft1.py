@@ -68,6 +68,7 @@ class Check_FT(object):
         print('cnot on data number', cnot_nd)
 
         err_synds = circuit_2err2(self.ancillas, extractor_z, extractor_x, two_err=self.two_error, one_err=None)
+#        print(err_synds,'err_synds')
         lut_synd = dict()
         lut_flag = dict()
         for synd in err_synds.keys():
@@ -76,11 +77,6 @@ class Check_FT(object):
             else:
                 synd_r1 = set(synd[0]) | set(synd[1])
                 synd_r2 = set(synd[2]) | set(synd[3])
-                err_min = self.init_logs[0]
-                for qbt in err_synds[synd]:
-                    err = sp.Pauli(x_set=qbt[0], z_set=qbt[1])
-                    if err.weight() < err_min.weight():
-                        err_min = err
                 err_minx = self.init_logs[0]
                 err_minz = self.init_logs[1]
                 for qbt in err_synds[synd]:
@@ -99,7 +95,7 @@ class Check_FT(object):
                     if flag1 not in lut_flag.keys():
                         lut_flag[flag1] = dict()
 
-                    for i in range(len(synd_r2)):
+                    for i in range(len(synd_r2)): # loop through X and Z
                         flag_key = tuple(sorted(synd_r2[i]))
                         if flag_key not in lut_flag[flag1]:
                             lut_flag[flag1][flag_key] = err_mins[i]
@@ -117,12 +113,15 @@ class Check_FT(object):
                 elif synd_r1 & set(self.q_synd):
                     
                     for i in range(len(synd_r2)):
+#                        print(synd_r2,'synd_r2')
                         synd_key = tuple(sorted(synd_r2[i]))
+#                        print(synd_key,'synd_key')
                         if synd_key not in lut_synd:
                             lut_synd[synd_key] = err_mins[i]
                         else:
                             for log in self.init_logs:
                                 if err_mins[i] != lut_synd[synd_key]:
+                                    
                                     if (err_mins[i] * lut_synd[synd_key]).com(log):
                                         print(err_synds)
                                         print('synd is', synd_key)
@@ -364,8 +363,9 @@ def check(cir_index='c2_l1', steane=True):
     return err
 
 if __name__ == '__main__':
-    x = Check_FT(cir_index='c1_l1', steane=True)
-    x.lut_gen()
+    x = Check_FT(cir_index='c2_l2', steane=True)
+    lut_synd, lut_flag = x.lut_gen()
+    print(lut_synd)
     err = check()
     if err:
         print('Yes, this circuit is FT :)')
