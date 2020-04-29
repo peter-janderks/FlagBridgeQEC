@@ -1,0 +1,66 @@
+% This file was created by tikzplotlib v0.9.1.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.886274509803922,0.290196078431373,0.2}
+
+\begin{axis}[
+axis background/.style={fill=white!89.8039215686275!black},
+axis line style={white},
+tick align=outside,
+tick pos=left,
+x grid style={white},
+xmajorgrids,
+xmin=0.00078, xmax=0.00122,
+xtick style={color=white!33.3333333333333!black},
+y grid style={white},
+ymajorgrids,
+ymin=0.000371773752631531, ymax=0.00224769587058941,
+ytick style={color=white!33.3333333333333!black}
+]
+\path [draw=color0, semithick]
+(axis cs:0.0008,0.000473247558205974)
+--(axis cs:0.0008,0.00104675244179403);
+
+\path [draw=color0, semithick]
+(axis cs:0.0009,0.000457042939811435)
+--(axis cs:0.0009,0.00102295706018856);
+
+\path [draw=color0, semithick]
+(axis cs:0.001,0.000907957733395323)
+--(axis cs:0.001,0.00165204226660468);
+
+\path [draw=color0, semithick]
+(axis cs:0.0011,0.00114065034094551)
+--(axis cs:0.0011,0.00195934965905449);
+
+\path [draw=color0, semithick]
+(axis cs:0.0012,0.00129757331659049)
+--(axis cs:0.0012,0.00216242668340951);
+
+\addplot [semithick, color0, mark=-, mark size=10, mark options={solid}, only marks]
+table {%
+0.0008 0.000473247558205974
+0.0009 0.000457042939811435
+0.001 0.000907957733395323
+0.0011 0.00114065034094551
+0.0012 0.00129757331659049
+};
+\addplot [semithick, color0, mark=-, mark size=10, mark options={solid}, only marks]
+table {%
+0.0008 0.00104675244179403
+0.0009 0.00102295706018856
+0.001 0.00165204226660468
+0.0011 0.00195934965905449
+0.0012 0.00216242668340951
+};
+\addplot [semithick, color0]
+table {%
+0.0008 0.00076
+0.0009 0.00074
+0.001 0.00128
+0.0011 0.00155
+0.0012 0.00173
+};
+\end{axis}
+
+\end{tikzpicture}
