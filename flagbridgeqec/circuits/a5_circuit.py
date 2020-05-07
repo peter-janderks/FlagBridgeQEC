@@ -1,18 +1,18 @@
 from flagbridgeqec.utils.circuit_construction import op_list, add_idling
 
-def cir_steane_5a(section):
+def cir_steane_5a(section,idling):
     timesteps = []
     if section == 1:
-        timesteps = cir_5a_first_half(timesteps)
+        timesteps = cir_5a_first_half(timesteps,idling)
     elif section == 2:
-        timesteps = cir_5a_second_half(timesteps)
+        timesteps = cir_5a_second_half(timesteps,idling)
     elif section == 3:
-        timesteps = cir_5a_second_round_after_first_half(timesteps) 
+        timesteps = cir_5a_second_round_after_first_half(timesteps,idling) 
     elif section == 4:
-        timesteps = cir_5a_second_round_after_second_half(timesteps)
+        timesteps = cir_5a_second_round_after_second_half(timesteps,idling)
     return(timesteps)
 
-def cir_5a_first_half(timesteps):
+def cir_5a_first_half(timesteps,idling):
     timesteps.append(op_list([('P', [8,12])]))
     timesteps.append(op_list([('H', [8,12]),('P', [9,10,11])]))
     timesteps.append(op_list([('CNOT', [(8,9),(12,11)]),('H',[10])]))
@@ -26,11 +26,11 @@ def cir_5a_first_half(timesteps):
     
     timesteps.append(op_list([('M',[8,9]),('H',[10,110]),('P',[120])]))
     timesteps.append(op_list([('M',[10]),('CNOT',[(110,120)]),('P',[90])]))
-
-    timesteps = add_idling(timesteps, [8,9,10,11,12],[1,2,3,4,5,6,7])
+    if idling:
+        timesteps = add_idling(timesteps, [8,9,10,11,12],[1,2,3,4,5,6,7])
     return(timesteps)
 
-def cir_5a_second_half(timesteps):
+def cir_5a_second_half(timesteps,idling):
     timesteps.append(op_list([('H', [90]),('P', [80]),('CNOT',[(5,110),(7,120)])]))
     timesteps.append(op_list([('CNOT', [(90,80),(6,110),(4,120)]),('P',[100])]))
     timesteps.append(op_list([('CNOT', [(90,100),(4,80),(110,120)])]))
@@ -42,12 +42,11 @@ def cir_5a_second_half(timesteps):
     timesteps.append(op_list([('M',[80]),('CNOT',[(90,100)])]))
     timesteps.append(op_list([('H',[90]),('M',[100])]))
     timesteps.append(op_list([('M',[90]),('P',[8,12])]))
-
-    timesteps = add_idling(timesteps, [80,90,100,110,120],[1,2,3,4,5,6,7])
-
+    if idling:
+        timesteps = add_idling(timesteps, [80,90,100,110,120],[1,2,3,4,5,6,7])
     return(timesteps)
 
-def cir_5a_second_round_after_second_half(timesteps):
+def cir_5a_second_round_after_second_half(timesteps,idling):
     timesteps.append(op_list([('H', [8,12]),('P', [9,10,11])]))
     timesteps.append(op_list([('CNOT', [(8,9),(12,11)]),('H',[10])]))
     timesteps.append(op_list([('CNOT', [(8,4),(10,9),(11,5),(12,7)])]))
@@ -60,7 +59,8 @@ def cir_5a_second_round_after_second_half(timesteps):
 
     timesteps.append(op_list([('M',[8,9]),('H',[10,110]),('P',[120])]))
     timesteps.append(op_list([('M',[10]),('CNOT',[(110,120)]),('P',[90])]))
-    timesteps = add_idling(timesteps, [8,9,10,11,12],[1,2,3,4,5,6,7])
+    if idling:
+        timesteps = add_idling(timesteps, [8,9,10,11,12],[1,2,3,4,5,6,7])
 
     timesteps.append(op_list([('H', [90]),('P', [80]),('CNOT',[(5,110),(7,120)])]))
     timesteps.append(op_list([('CNOT', [(90,80),(6,110),(4,120)]),('P',[100])]))
@@ -73,10 +73,11 @@ def cir_5a_second_round_after_second_half(timesteps):
     timesteps.append(op_list([('M',[80]),('CNOT',[(90,100)])]))
     timesteps.append(op_list([('H',[90]),('M',[100])]))
     timesteps.append(op_list([('M',[90])]))
-    timesteps = add_idling(timesteps, [80,90,100,110,120],[1,2,3,4,5,6,7])
+    if idling:
+        timesteps = add_idling(timesteps, [80,90,100,110,120],[1,2,3,4,5,6,7])
     return(timesteps)
 
-def cir_5a_second_round_after_first_half(timesteps):
+def cir_5a_second_round_after_first_half(timesteps,idling):
     timesteps.append(op_list([('H', [90]),('P', [80]),('CNOT',[(5,110),(7,120)])]))
     timesteps.append(op_list([('CNOT', [(90,80),(6,110),(4,120)]),('P',[100])]))
     timesteps.append(op_list([('CNOT', [(90,100),(4,80),(110,120)])]))
@@ -88,7 +89,8 @@ def cir_5a_second_round_after_first_half(timesteps):
     timesteps.append(op_list([('M',[80]),('CNOT',[(90,100)])]))
     timesteps.append(op_list([('H',[90]),('M',[100])]))
     timesteps.append(op_list([('M',[90]),('P',[8,12])]))
-    timesteps = add_idling(timesteps, [80,90,100,110,120],[1,2,3,4,5,6,7])
+    if idling:
+        timesteps = add_idling(timesteps, [80,90,100,110,120],[1,2,3,4,5,6,7])
     timesteps.append(op_list([('H', [8,12]),('P', [9,10,11])]))
 
 
@@ -103,7 +105,8 @@ def cir_5a_second_round_after_first_half(timesteps):
 
     timesteps.append(op_list([('M',[8,9]),('H',[10])]))
     timesteps.append(op_list([('M',[10])]))
-    timesteps = add_idling(timesteps, [8,9,10,11,12],[1,2,3,4,5,6,7])
+    if idling:
+        timesteps = add_idling(timesteps, [8,9,10,11,12],[1,2,3,4,5,6,7])
     return(timesteps)
 
 def op_list(ls_ops):

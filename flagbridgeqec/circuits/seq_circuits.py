@@ -8,11 +8,15 @@ def esm2(idling=False):
     """
     cirs = []
     cirs.append(esmx_anc([4,5,6,7], [12, 13], db=3, idling=idling))
+    print(cirs,'cirs1')
     cirs.append(esmx_anc([1,2,4,5], [8, 9], idling=idling))
+    print(cirs,'cirs2')
     cirs.append(esmx_anc([1,3,4,7], [10, 11], idling=idling))
+    print(cirs,'cirs3')
     cirs.append(esmz_anc([4,5,6,7], [120, 130],  db=3, idling=idling))
     cirs.append(esmz_anc([1,2,4,5], [80, 90], idling=idling))
     cirs.append(esmz_anc([1,3,4,7], [100, 110], idling=idling))
+    
     return cirs
 
 def esm3(idling=False):
@@ -45,6 +49,7 @@ def esm5(idling=False):
     syndrome extractor circuit for steane circuit 5, two checks in parallel   
     """
     cirs = []
+
     cirs.append(esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9], idling=idling))
     cirs.append(esmx_anc([4,5,6,7], [13, 12], idling=idling))
     cirs.append(esmzs_anc3( [3,7,2,5], [3,7,1,4], [80, 100, 90], idling=idling))
