@@ -1,0 +1,70 @@
+PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
+
+CUT
+
+d1 W 1
+d2 W 2
+d3 W 3
+d4 W 4
+d5 W 5
+d6 W 6
+d7 W 7
+a8 W s_1\ket{0} {} \ket{0}	
+a9 W f_1\ket{0} {} \ket{0}	 
+a10 W s_2\ket{0} {} \ket{0}	 
+a11 W f_2\ket{0} {} \ket{0}	 
+a12 W s_3\ket{0} {} \ket{0}	 
+a13 W f_3\ket{0} {} \ket{0}	 
+
+%%%%%t10
+LB
+a9 C a8
+a10 H
+a12 H
+a11 a13 START
+LE
+
+%%%%%t11
+a9 C d4 color=green
+a8 C d1 color=green
+a11 C a10
+a13 C a12
+
+%%%%%t12
+a12 C d4 color=blue
+a13 C d6 color=blue
+a10 C d1 color=red
+a11 C d7 color=red
+a9 C d5 color=green
+a8 C d2 color=green
+
+%%%%%t13
+a12 C d5 color=blue
+a11 C d4 color=red
+a10 C d3 color=red
+a9 C a8
+
+%%%%%t14
+a8 H
+a9 M
+a12 C d7 color=blue
+a11 C a10
+
+%%%%%t15
+a8 M
+a13 C a12
+a10 H
+a11 M
+
+%%%%t16
+a10 M
+a12 H
+a13 M
+
+%%%%t17
+LB
+a12 M
+a13 a9 END
+a13 a9 START
+LE
+
