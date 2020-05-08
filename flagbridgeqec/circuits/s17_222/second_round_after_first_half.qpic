@@ -1,5 +1,10 @@
 PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
-
+DEFINE a8 a80
+DEFINE a9 a90
+DEFINE a10 a100
+DEFINE a11 a110
+DEFINE a12 a120
+DEFINE a13 a130
 CUT
 
 d1 W 1
@@ -18,67 +23,67 @@ a13 W f_3\ket{0} {} \ket{0}
 
 %%%%%t10
 LB
-a9 C a8
-a10 H
-a12 H
-a11 a13 START
+a90 C a80
+a100 H
+a120 H
+a110 a130 START
 LE
 
 %%%%%t11
-a9 C d4 color=green
-a8 C d1 color=green
-a11 C a10
-a13 C a12
+a90 C d4 color=green
+a80 C d1 color=green
+a110 C a100
+a130 C a120
 
 %%%%%t12
-a12 C d4 color=blue
-a13 C d6 color=blue
-a10 C d1 color=red
-a11 C d7 color=red
-a9 C d5 color=green
-a8 C d2 color=green
+a120 C d4 color=blue
+a130 C d6 color=blue
+a100 C d1 color=red
+a110 C d7 color=red
+a90 C d5 color=green
+a80 C d2 color=green
 
 %%%%%t13
-a12 C d5 color=blue
-a11 C d4 color=red
-a10 C d3 color=red
-a9 C a8
+a120 C d5 color=blue
+a110 C d4 color=red
+a100 C d3 color=red
+a90 C a8
 
 %%%%%t14
-a8 H
-a9 M
-a12 C d7 color=blue
-a11 C a10
+a80 H
+a90 M
+a120 C d7 color=blue
+a110 C a100
 
 %%%%%t15
-a8 M
-a13 C a12
-a10 H
-a11 M
+a80 M
+a130 C a120
+a100 H
+a110 M
 
 %%%%t16
-a10 M
-a12 H
-a13 M
+a100 M
+a120 H
+a130 M
 
 %%%%t17
 LB
-a12 M
-a13 a9 END
+a120 M
+a130 a90 END
 a13 a9 START
 LE
 %%%%%%t18
 LB
 a13 H
 a9 H
-a12 a8 a11 END
+a120 a8 a110 END
 a12 a8 a11 START
 LE
 %%%%%%%t19
 a12 C a13
 a8 C a9
 a11 H
-a10 END
+a100 END
 a10 START
 
 %%%%%%%t20

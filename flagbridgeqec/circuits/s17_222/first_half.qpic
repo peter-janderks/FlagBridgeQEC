@@ -1,4 +1,9 @@
 PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
+DEFINE a80 a8
+DEFINE a90 a9
+DEFINE a100 a10
+DEFINE a110 a11
+DEFINE a120 a12
 
 CUT
 
@@ -61,7 +66,7 @@ a12 C a13
 %%%t8
 LB
 a8 END
-a8 START
+a80 START
 a9 M
 a10 M
 a11 H
@@ -74,9 +79,9 @@ LB
 a8 H
 a11 M
 a9 a10 END
-a9 a10 START
+a90 a100 START
 a12 END
-a12 START
+a120 START
 a13 M
 LE
 
