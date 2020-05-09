@@ -9,7 +9,6 @@ class Check_FT(object):
     def __init__(self, cir_index=2, steane=True):
 
         self.cir_index = cir_index
-        
         if cir_index == 'c1_l1' or cir_index == 'c1_l2':
             # for cir_steane2,3
             self.q_synd = [9, 11, 13, 80, 100, 120]
@@ -40,6 +39,7 @@ class Check_FT(object):
     def ft_circuit(self, tp='XZ'):
         if self.cir_index == 'c1_l2':
             timestps = steane_c1_l2(tp)
+
         elif self.cir_index == 'c1_l1':
             timestps = steane_c1_l1(tp)
         elif self.cir_index == 'c2_l1':
@@ -68,7 +68,7 @@ class Check_FT(object):
         print('cnot on data number', cnot_nd)
 
         err_synds = circuit_2err2(self.ancillas, extractor_z, extractor_x, two_err=self.two_error, one_err=None)
-#        print(err_synds,'err_synds')
+
         lut_synd = dict()
         lut_flag = dict()
         for synd in err_synds.keys():
@@ -240,10 +240,13 @@ def steane_c2_l1(tp='XZ'):
     timesteps = []
     if 'Z' in tp:
         timesteps += esmzs_anc3( [3,7,2,5], [3,7,1,4], [80, 100, 90])
+
         timesteps += esmz_anc([4,5,6,7], [120, 130, 140])
-    
+
     if 'X' in tp:
+        print(esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9]),'timesteps 1')
         timesteps += esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9])
+        print(esmx_anc([4,5,6,7], [12, 13, 14]),'timesteps 2')
         timesteps += esmx_anc([4,5,6,7], [12, 13, 14])
 
     return timesteps
@@ -363,7 +366,7 @@ def check(cir_index='c2_l1', steane=True):
     return err
 
 if __name__ == '__main__':
-    x = Check_FT(cir_index='c2_l2', steane=True)
+    x = Check_FT(cir_index='c2_l1', steane=True)
     lut_synd, lut_flag = x.lut_gen()
     print(lut_synd)
     err = check()

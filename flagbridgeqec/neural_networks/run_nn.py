@@ -50,12 +50,11 @@ def std(mean):
     dev = (1-mean)*(mean**2) + mean*((1-mean)**2)
     return np.sqrt(dev)
 
-print(device_lib.list_local_devices())
-trials = 200
+trials = 10000
 
-model_name = 'test_nn'
+model_name = '[24]'
 cpus = 10
-
+total_trials = trials*cpus
 
 err_lo = 0.0008
 err_hi = 0.0012
@@ -64,7 +63,7 @@ errs = np.linspace(err_lo, err_hi, n_point)
 
 confidence = 0.999
 
-file_name = 'results/'+ str(model_name) + '.txt'
+file_name = 'results/'+ str(model_name) + str(total_trials) + 'new.txt'
 
 for i in range(len(errs)):
     per = errs[i]

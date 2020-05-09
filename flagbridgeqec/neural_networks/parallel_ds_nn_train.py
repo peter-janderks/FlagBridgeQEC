@@ -23,8 +23,6 @@ src_path =  "../src/"
 
 def check_hld(outputname, trials, qeccode):
     import tensorflow as tf
-    print(device_lib.list_local_devices())
-    print('here')
 
     with tf.device('/CPU:0'):
         model = tf.keras.models.load_model('nn_model/'+outputname+'.model')

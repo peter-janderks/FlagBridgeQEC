@@ -1,4 +1,3 @@
-0
 #from tensorflow.python.client import device_lib
 from nn_model_ds import create_model, data_generator_on_the_fly, read_data, data_generator, MyBatchGenerator
 import numpy as np
@@ -27,7 +26,7 @@ class neural_network(object):
         model_name = 'test_nn'
         lr = 0.002
 #        batchsize= 1000
-        n_epochs = 500
+        n_epochs = 1000
         cpus = 10
         trials = 10
         model = create_model(in_dim=in_dim, out_dim=out_dim,
@@ -41,14 +40,14 @@ class neural_network(object):
 
         hist = model.fit(x=ds[0],
                  y=ds[1],
-                 batch_size = 50,
+                 batch_size = 100,
                  epochs = n_epochs,
                  verbose=2,
                  use_multiprocessing=True,
                  workers=cpus,
                  max_queue_size=cpus)
-        model.save('nn_model/'+ str(layers) +'.model')
-        total_errors = neural_network_decoder(trials,qeccode,model_name,cpus)
+        layers_string ='_'.join((str(n)) for n in layers)
+        model.save('nn_model/'+ str(layers_string) +'.model')
 
 def neural_network_decoder(trials,qeccode,model_name,cpus):
 #    err = check_hld(model, 100, qeccode)
@@ -88,14 +87,13 @@ if __name__ == '__main__':
     if len(argv) >= 2:
         network = neural_network(argv)
     else:
-        
         per = 0.001
         cir_id = 'c3_l2'
         idling = 1
         ridle = 0.1
-        layers = [40]
+        layers = [16,12]
         hidden_activation_function = 'tanh'
-        output_activation_function = 'sigmoid'
+        output_activation_function = 'softmax'
         loss_function = 'binary_crossentropy'
 
         input_array = [0,per,cir_id,idling,ridle,layers,hidden_activation_function,output_activation_function, loss_function]
