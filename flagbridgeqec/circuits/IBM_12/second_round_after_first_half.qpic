@@ -48,8 +48,8 @@ a100 C a90
 
 
 #t14
-a110 C d6 color=yellow
-a120 C d4 color=yellow
+a110 C d4 color=yellow
+a120 C d6 color=yellow
 a100 C d2 color=blue
 a80 C d3 color=blue
 a90 C d1 color=blue
