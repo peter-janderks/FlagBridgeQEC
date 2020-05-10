@@ -1,0 +1,131 @@
+PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
+
+DEFINE a80 a8
+DEFINE a90 a9
+DEFINE a100 a10
+DEFINE a110 a11
+DEFINE a120 a12
+DEFINE a130 a13
+
+CUT
+
+d1 W 1
+d2 W 2
+d3 W 3
+d4 W 4
+d5 W 5
+d6 W 6
+d7 W 7
+a8 W s_1\ket{0} {} \ket{0}	
+a9 W f_1\ket{0} {} \ket{0}	 
+a10 W s_2\ket{0} {} \ket{0}	 
+a11 W f_2\ket{0} {} \ket{0}	 
+a12 W s_3\ket{0} {} \ket{0}	 
+a13 W f_3\ket{0} {} \ket{0}	 
+
+%%%%%t10
+LB
+a90 C a80
+a100 H
+a120 H
+a110 a130 END
+a110 a130 START
+LE
+
+%%%%%t11
+a90 C d4 color=green
+a80 C d1 color=green
+a110 C a100
+a130 C a120
+
+%%%%%t12
+a120 C d4 color=blue
+a130 C d6 color=blue
+a100 C d1 color=red
+a110 C d7 color=red
+a90 C d5 color=green
+a80 C d2 color=green
+
+%%%%%t13
+a120 C d5 color=blue
+a110 C d4 color=red
+a100 C d3 color=red
+a90 C a80
+
+%%%%%t14
+a80 H
+a90 M
+a120 C d7 color=blue
+a110 C a100
+
+%%%%%t15
+a80 M
+a130 C a120
+a100 H
+a110 M
+
+%%%%t16
+a100 M
+a120 H
+a130 M
+
+%%%%t17
+a120 M
+a9 START
+a13 START
+
+%%%%t2
+a13 H
+a9 H
+a12 START
+a8 START
+a11 START
+
+%%%%%%%t3
+a12 C a13
+a8 C a9
+a11 H
+a10 START
+
+%%%%%%%t4
+d4 C a12 color=blue
+d1 C a8 color=green
+d6 C a13 color=blue
+d5 C a9 color=green
+a10 C a11
+
+%%%%%%%t5
+d5 C a12 color=blue
+d4 C a9 color=green
+d2 C a8 color=green
+d1 C a10 color=red
+d7 C a11 color=red
+
+%%%%%%%t6
+d7 C a12 color=blue
+d4 C a11 color=red
+d3 C a10 color=red
+a8 C a9
+
+%%%%%t7
+a9 H
+a8 M
+a10 C a11
+a12 C a13
+
+%%%t8
+LB
+a9 M
+a10 M
+a11 H
+a12 M
+a13 H
+LE
+
+%%%%%%t9
+LB
+a11 M
+a9 a10 END
+a12 END
+a13 M
+LE
