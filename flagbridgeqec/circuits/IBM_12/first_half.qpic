@@ -9,13 +9,13 @@ DEFINE a120 a12
 DEFINE a130 a13
 
 
-d2 W 1
-d1 W 2
+d1 W 1
+d2 W 2
 d3 W 3
-d5 W 4
-d7 W 5
+d4 W 4
+d5 W 5
 d6 W 6
-d4 W 7
+d7 W 7
 
 a8 W s_1\ket{0} {} \ket{0}
 a9 W f_1\ket{0} {} \ket{0}
@@ -24,6 +24,8 @@ a11 W f_2\ket{0} {} \ket{0}
 a12 W s_3\ket{0} {} \ket{0}
 
 CUT
+
+a8 a12 START
 
 #t1
 LB
@@ -35,33 +37,31 @@ LE
 #t2
 a10 H
 a9 C a8
+a11 C a12
 
 #t3
 a9 C a10
-a11 C a12
-
-#t4
-d5 C a8 color=blue
-d4 C a12 color=yellow
-d7 C a11 color=yellow
+d4 C a8 color=blue
+d7 C a12 color=yellow
+d5 C a11 color=yellow
 
 #t5
 d6 C a12 color=yellow
-d5 C a11 color=yellow
-d1 C a10 color=blue
+d4 C a11 color=yellow
+d2 C a10 color=blue
 d3 C a8 color=blue
-d2 C a9 color=blue
+d1 C a9 color=blue
 
 #t6
-d4 C a8 color=blue
-d5 C a10 color=blue
+d7 C a8 color=blue
+d4 C a10 color=blue
 a11 C a12
 
 #t7
 a11 M
 a9 C a8
 a12 H
-d7 C a10 color=blue
+d5 C a10 color=blue
 
 #t8
 LB

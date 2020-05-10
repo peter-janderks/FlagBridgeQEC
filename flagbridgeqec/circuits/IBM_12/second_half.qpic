@@ -9,13 +9,13 @@ DEFINE a120 a12
 DEFINE a130 a13
 
 
-d2 W 1
-d1 W 2
+d1 W 1
+d2 W 2
 d3 W 3
-d5 W 4
-d7 W 5
+d4 W 4
+d5 W 5
 d6 W 6
-d4 W 7
+d7 W 7
 
 a8 W s_1\ket{0} {} \ket{0}
 a9 W f_1\ket{0} {} \ket{0}
@@ -41,29 +41,29 @@ a100 START
 LE
 
 #t13
-a120 C d4 color=yellow
-a110 C d7 color=yellow
-a80 C d5 color=blue
+a120 C d7 color=yellow
+a110 C d5 color=yellow
+a80 C d4 color=blue
 a100 C a90
 
 
 #t14
 a110 C d6 color=yellow
-a120 C d5 color=yellow
-a100 C d1 color=blue
+a120 C d4 color=yellow
+a100 C d2 color=blue
 a80 C d3 color=blue
-a90 C d2 color=blue
+a90 C d1 color=blue
 
 #t15
 a120 C a110
-a80 C d4 color=blue
-a100 C d5 color=blue
+a80 C d7 color=blue
+a100 C d4 color=blue
 a110 M
 
 #t15
 a110 H
 a120 M
-a100 C d7 color=blue
+a100 C d5 color=blue
 a80 C a90
 
 #t16
@@ -77,7 +77,7 @@ a90 H
 #t18
 LB
 a90 M
+a8 a12 START
 a80 END
 a120 END
-a8 a12 START
 LE
