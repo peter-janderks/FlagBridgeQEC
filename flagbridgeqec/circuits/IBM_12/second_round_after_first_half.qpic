@@ -58,10 +58,10 @@ a90 C d1 color=blue
 a120 C a110
 a80 C d7 color=blue
 a100 C d4 color=blue
-a110 M
+a110 H
 
 #t15
-a110 H
+a110 M
 a120 M
 a100 C d5 color=blue
 a80 C a90
