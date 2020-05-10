@@ -1,4 +1,3 @@
-
 PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
 
 DEFINE a80 a8
@@ -58,7 +57,7 @@ a90 C d1 color=blue
 a120 C a110
 a80 C d7 color=blue
 a100 C d4 color=blue
-a110 M
+
 
 #t15
 a110 H
@@ -69,6 +68,7 @@ a80 C a90
 #t16
 a100 C a90
 a80 M
+a110 M
 
 #t17
 a100 M
