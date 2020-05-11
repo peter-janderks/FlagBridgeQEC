@@ -1,0 +1,125 @@
+PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
+
+DEFINE a8 a80
+DEFINE a9 a90
+DEFINE a10 a100
+DEFINE a11 a110
+
+CUT
+
+d1 W 1
+d2 W 2
+d3 W 3
+d4 W 4
+d5 W 5
+d6 W 6
+d7 W 7
+a80 W s_1\ket{0} {} \ket{0}
+a90 W s_2\ket{0} {} \ket{0}
+a100 W s_3\ket{0} {} \ket{0}
+a110 W f_1\ket{0} {} \ket{0}
+
+%%%%%%%t14
+a110 H
+a100 START
+
+%%%%%%%t15
+a100 C a110
+a90 START
+
+%%%%%%%t16
+a90 C a100
+a110 C d6
+
+%%%%%%%t17
+a80 START
+a90 C d3
+a100 C d7
+a110 C d5
+
+%%%%%%%t18
+a80 C a90
+a110 C d4
+
+%%%%%%%t19
+a80 C d2
+a90 C d1
+
+%%%%%%%t20
+a80 C d5
+a90 C d4
+
+%%%%%%%t21
+a80 C a90
+
+%%%%%%%t22
+a80 M
+a90 C a100
+
+%%%%%%%t23
+a90 M
+a100 C a110
+
+%%%%%%%t24
+a100 M
+a110 H
+
+%%%%%%%t25
+a110 M
+a100 END
+a10 START
+
+%%%%%t2
+a10 H
+a110 END
+a11 START
+a90 END
+a9 START
+
+%%%%%%t3
+a11 C a10
+a9 H
+
+%%%%%%t4
+a10 C a9
+d6 C a11
+a80 END
+a8 START
+
+%%%%%%t5
+d3 C a9
+d5 C a11
+d7 C a10
+a8 H
+
+%%%%%%t6
+a9 C a8
+d4 C a11
+
+%%%%%%t7
+d2 C a8
+d1 C a9
+
+%%%%%%t8
+d5 C a8
+d4 C a9
+
+%%%%%%t9
+a9 C a8
+
+%%%%%%t10
+a8 H
+a10 C a9
+
+%%%%%%t11
+a8 M
+a9 H
+a11 C a10
+
+%%%%%%t12
+a9 M
+a10 H
+a11 M
+
+%%%%%%t13
+a10 M

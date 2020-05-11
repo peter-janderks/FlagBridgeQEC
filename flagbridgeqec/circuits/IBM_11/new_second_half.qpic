@@ -1,0 +1,69 @@
+PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
+
+DEFINE a8 a80
+DEFINE a9 a90
+DEFINE a10 a100
+DEFINE a11 a110
+
+CUT
+
+d1 W 1
+d2 W 2
+d3 W 3
+d4 W 4
+d5 W 5
+d6 W 6
+d7 W 7
+a80 W s_1\ket{0} {} \ket{0}
+a90 W s_2\ket{0} {} \ket{0}
+a100 W s_3\ket{0} {} \ket{0}
+a110 W f_1\ket{0} {} \ket{0}
+
+%%%%%%%t14
+a110 H
+a100 START
+
+%%%%%%%t15
+a100 C a110
+a90 START
+
+%%%%%%%t16
+a90 C a100
+a110 C d6
+
+%%%%%%%t17
+a80 START
+a90 C d3
+a100 C d7
+a110 C d5
+
+%%%%%%%t18
+a80 C a90
+a110 C d4
+
+%%%%%%%t19
+a80 C d2
+a90 C d1
+
+%%%%%%%t20
+a80 C d5
+a90 C d4
+
+%%%%%%%t21
+a80 C a90
+
+%%%%%%%t22
+a80 M
+a90 C a100
+
+%%%%%%%t23
+a90 M
+a100 C a110
+
+%%%%%%%t24
+a100 M
+a110 H
+
+%%%%%%%t25
+a110 M
+a10 START
