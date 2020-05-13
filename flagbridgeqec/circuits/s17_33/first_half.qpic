@@ -17,11 +17,11 @@ d5 W 5
 d6 W 6
 d7 W 7
 a8 W s_1\ket{0} {} \ket{0}
-a9 W f_1\ket{0} 
-a10 W s_2\ket{0}
+a9 W f_1\ket{0} {} \ket{0} 
+a10 W s_2\ket{0} {} \ket{0}
 a11 W s_3\ket{0} {} \ket{0}
-a12 W f_2\ket{0}
-a13 W f_3\ket{0}
+a12 W f_2\ket{0} {} \ket{0}
+a13 W f_3\ket{0} {} \ket{0}
 
 %%%%%t1
 a8 a11 START
@@ -41,7 +41,7 @@ TOUCH
 
 %%%%%%%t4
 d2 C a8 color=yellow
-d5 C a12 color=blue
+d5 C a11 color=blue
 a9 C a10
 a13 C a12
 
@@ -70,16 +70,23 @@ a9 C a10
 a8 H
 
 %%%%%%%%t9
+LB
 a11 M
 a10 H
 a8 M
 a9 M
+a12 END
+a120 START
+LE
 
 %%%%%%%%t10
 LB
 a10 M
-a110 END
+a11 END
 a110 START
-a80 END
-a80 START
+a9 END
+a90 START
+a120 H
+a13 END
+a130 START
 LE
