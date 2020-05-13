@@ -186,7 +186,6 @@ class Check_FT(object):
                             return ft_value
                         else:
                             ft_value = 1
-
             else:
                 ft_value = 1
 
@@ -366,9 +365,9 @@ def check(cir_index='c2_l1', steane=True):
     return err
 
 if __name__ == '__main__':
-    x = Check_FT(cir_index='c2_l1', steane=True)
+    x = Check_FT(cir_index='c3_l2', steane=True)
     lut_synd, lut_flag = x.lut_gen()
-    print(lut_synd)
+
     err = check()
     if err:
         print('Yes, this circuit is FT :)')

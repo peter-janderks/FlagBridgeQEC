@@ -19,22 +19,19 @@ def add_idling(timestep, living_qubits):
 def translate_line(line, living_qubits, timestep):
     if ' C ' in line:
         operations = line.split()
-        timestep.extend(op_set_2('CNOT',[(int(operations[0][1:]),int(operations[2][1:]))]))
+        timestep.extend(op_set_2('CNOT',[(int(operations[2][1:]),int(operations[0][1:]))]))
     elif ' H' in line:
         operations = line.split()
-
-
         timestep.extend(op_set_1('H',[int(operations[0][1:])]))
+
     elif 'START' in line:
         operations = line.split()
         for i in range(len(operations)-1):
             timestep.extend(op_set_1('P',[int(operations[i][1:])]))
             living_qubits.extend([int(operations[i][1:])])
-    else:
+    elif ' M' in line:
         operations = line.split()
         timestep.extend(op_set_1('M',[int(operations[0][1:])]))
-        print(living_qubits,'living_qubits')
-        print(int(operations[0][1:]))
         living_qubits.remove(int(operations[0][1:]))
     return(timestep, living_qubits)
 
@@ -55,30 +52,36 @@ def compile_sub_circuit(cir_nm,idling,living_qubits):
         read_data = f.readlines()
         all_timesteps = []
         timestep = []
+        
         for line in read_data:
             if ' C ' in line or ' H' in line or 'START' in line or ' M' in line:
                 #            print(type(line))
                 timestep, living_qubits = translate_line(line, living_qubits, timestep)
-            else:
+            elif line == '\n':
+                
                 if timestep != []:
                     if idling:
                         add_idling(timestep, living_qubits)
                     all_timesteps.append(timestep)
                     timestep = []
 
+        if timestep != []:
+                    if idling:
+                        add_idling(timestep, living_qubits)
+                    all_timesteps.append(timestep)
+                    timestep = []
 
     return(all_timesteps,living_qubits)
 
 def compile_circuit(cir_id,idling):
 
     living_qubits_1 = list(range(1,8))
-    first_half, living_qubits_1 = compile_sub_circuit('../../circuits/s17_222/first_half.qpic',idling,living_qubits_1)
+    first_half, living_qubits_1 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/first_half.qpic',idling,living_qubits_1)
     living_qubits_2 = living_qubits_1[:]
-    second_half, living_qubits_2 = compile_sub_circuit('../../circuits/s17_222/second_half.qpic',idling,living_qubits_2)
+    second_half, living_qubits_2 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/second_half.qpic',idling,living_qubits_2)
 
-    second_round_after_first_half,living_qubits_1 = compile_sub_circuit('../../circuits/s17_222/second_round_after_first_half.qpic',idling,living_qubits_1)
-    print(living_qubits_2,'here')
-    second_round_after_second_half,living_qubits_2 = compile_sub_circuit('../../circuits/s17_222/second_round_after_second_half.qpic',idling,living_qubits_2)
+    second_round_after_first_half,living_qubits_1 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/second_round_after_first_half.qpic',idling,living_qubits_1)
+    second_round_after_second_half,living_qubits_2 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/second_round_after_second_half.qpic',idling,living_qubits_2)
 
     return([first_half,second_half, second_round_after_first_half, second_round_after_second_half])
 if __name__ == "__main__":

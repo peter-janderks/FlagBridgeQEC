@@ -20,16 +20,21 @@ def main(per1, trials, cir_id, idling,cpus):
     pool.close()
     pool.join()
     total_errors = 0
+
+    ler_result = []
     for result in results:
-        total_errors += result.get()
-    total_trials = cpus*trials
-    return total_errors, total_trials
+        ler_result.append(result.get())
+    ler_resulta = {'I': 0, 'Z': 0, 'X': 0, 'Y': 0}
+    for rst in ler_result:
+        for log in rst:
+            ler_resulta[log] += rst[log]
+
+    return(ler_resulta)
 
 
 def std(mean):
     dev = (1-mean)*(mean**2) + mean*((1-mean)**2)
     return np.sqrt(dev)
-
 
 if __name__ == '__main__':
     from sys import argv
@@ -62,36 +67,20 @@ if __name__ == '__main__':
 
     for per in errs:
         # run the simulation
-        total_errors,total_trials = main(per, trials, cir_id, pI,cpus)
-        ler_m = total_errors/total_trials
-        
+
+        rst = main(per, trials, cir_id, pI,cpus)
+        print(rst)
+        corr = rst['I']
+        total = rst['I'] + rst['Y'] + rst['X'] + rst['Z']
+        ler_m = 1 - float(corr) / float(total_trials)
         sigma = std(ler_m) / float(np.sqrt(total_trials))
-        conf_int_a = stats.norm.interval(confidence, loc=ler_m, scale=sigma)
-        lers.append(ler_m)
-        intervals.append(conf_int_a)
+        conf_int_lut = stats.norm.interval(confidence, loc=ler_m, scale=sigma)
         of = open(file, 'a')
- #       of.write(str(total_trials))
- #       of.write('\n')
- #       of.write(str(per))
-#        of.write(str(rst))
- #       of.write('\t')
         of.write(str(ler_m))
         of.write('\t')
-        of.write(str(conf_int_a))
+        of.write(str(conf_int_lut))
         of.write('\n')
-        of.close() 
+        of.close()
 
-#    of = open(file, 'a')
-#    of.write('PER')
-#    of.write('\t')
-#    of.write(str(errs))
-#    of.write('\n')
-#    of.write('LER')
-#    of.write('\t')
-#    of.write(str(lers))
-#    of.write('\n')
-#    of.write('interval')
-#    of.write('\t')
-#    of.write(str(intervals))
-#    of.write('\n')  
-#    of.close()
+
+

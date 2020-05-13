@@ -54,58 +54,18 @@ if __name__ == '__main__':
     lers = []
     intervals = []
 
-#    of = open(file, 'a')
-#    of = open(file, 'w+')
-#    of.write('a new round of simulation, err_lo and pI are ')
-#    of.write('\n')
-#    of.write(str(err_lo))
-#    of.write(str(pI))
-#    of.write('\n')
-#    of.close()
-
     for per in errs:
-        # run the simulation
         rst = main(per, trials, cir_id, pI,cpus)
-#        ler_m = total_errors/total_trials
-#        rst = lut_decoder(trials,qeccode,cpus)
-
         corr = rst['I']
         total = rst['I'] + rst['Y'] + rst['X'] + rst['Z']
         ler_m = 1 - float(corr) / float(total_trials)
         sigma = std(ler_m) / float(np.sqrt(total_trials))
         conf_int_lut = stats.norm.interval(confidence, loc=ler_m, scale=sigma)
-#        lers_lut[i] = ler_m
-#        intervals_lut[0][i] = conf_int_lut[0]
-#        intervals_lut[1][i] = conf_int_lut[1]
-
-
-#        sigma = std(ler_m) / float(np.sqrt(total_trials))
-#        conf_int_a = stats.norm.interval(confidence, loc=ler_m, scale=sigma)
-#        lers.append(ler_m)
-#        intervals.append(conf_int_a)
         of = open(file, 'a')
- #       of.write(str(total_trials))
- #       of.write('\n')
- #       of.write(str(per))
-#        of.write(str(rst))
- #       of.write('\t')
         of.write(str(ler_m))
         of.write('\t')
         of.write(str(conf_int_lut))
         of.write('\n')
         of.close() 
 
-#    of = open(file, 'a')
-#    of.write('PER')
-#    of.write('\t')
-#    of.write(str(errs))
-#    of.write('\n')
-#    of.write('LER')
-#    of.write('\t')
-#    of.write(str(lers))
-#    of.write('\n')
-#    of.write('interval')
-#    of.write('\t')
-#    of.write(str(intervals))
-#    of.write('\n')  
-#    of.close()
+

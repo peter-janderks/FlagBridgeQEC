@@ -40,14 +40,19 @@ a13 START
 TOUCH
 
 %%%%%%%t4
+d6 C a11 color=blued
 d2 C a8 color=yellow
+<<<<<<< Updated upstream
 d5 C a11 color=blue
+=======
+>>>>>>> Stashed changes
 a9 C a10
 a13 C a12
 
 %%%%%%%t5
+d5 C a12 color=blue
 d4 C a12 color=blue
-d6 C a11 color=blue
+
 d7 C a13 color=blue
 d3 C a10 color=yellow
 d1 C a9 color=yellow

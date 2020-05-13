@@ -593,7 +593,8 @@ class Steane_FT(object):
             # # check logical errors
             err_tp = singlelogical_error(err, self.init_logs)
             self.errors[err_tp] += 1
-            
+        print(no_errors,'no_errors')
+        print(self.errors,'self.errors')
         return (self.errors)
 
     def run_lld_2(self, trials,ds): # ignore syndromes second round
@@ -1133,7 +1134,6 @@ def circ2err(circ, err_model, err, anc):
     synd = set()
     for stp, mdl in list(zip(circ, err_model)):
         # run timestep, then sample
-        print(stp,'stp')
         new_synds, err = cm.apply_step(stp, err)
         err *= product(_.sample() for _ in mdl)
         synd |= new_synds[1]
@@ -1141,9 +1141,9 @@ def circ2err(circ, err_model, err, anc):
     # last round of circuit, because there are n-1 errs, n gates
     new_synds, err = cm.apply_step(circ[-1], err)
     synd |= new_synds[1]
+    err_before = err.copy()
     # remove remaining errors on ancilla qubits before append
     err.prep(anc)
-
     return synd, err
 
 
