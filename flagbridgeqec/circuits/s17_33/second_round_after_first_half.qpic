@@ -81,10 +81,14 @@ a11 START
 LE
 
 %%%%t2
+LB
 a8 H
 a11 H
+a90 END
+a100 END
+a120 END
 a9 a10 a12 START
-
+LE
 %%%%%t3
 a12 C a11
 a9 C a8

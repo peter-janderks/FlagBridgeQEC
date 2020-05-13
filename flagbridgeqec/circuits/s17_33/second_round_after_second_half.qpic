@@ -17,11 +17,11 @@ d5 W 5
 d6 W 6
 d7 W 7
 a8 W s_1\ket{0} {} \ket{0}
-a9 W f_1\ket{0} 
-a10 W s_2\ket{0}
+a9 W f_1\ket{0} {} \ket{0} 
+a10 W s_2\ket{0} {} \ket{0}
 a11 W s_3\ket{0} {} \ket{0}
-a12 W f_2\ket{0}
-a13 W f_3\ket{0}
+a12 W f_2\ket{0} {} \ket{0}
+a13 W f_3\ket{0} {} \ket{0}
 
 %%%%%t1
 a8 a11 START
@@ -41,7 +41,7 @@ TOUCH
 
 %%%%%%%t4
 d2 C a8 color=yellow
-d5 C a12 color=blue
+d5 C a11 color=blue
 a9 C a10
 a13 C a12
 
@@ -70,42 +70,48 @@ a9 C a10
 a8 H
 
 %%%%%%%%t9
+LB
 a11 M
 a10 H
 a8 M
 a9 M
+a12 END
+a120 START
+LE
 
 %%%%%%%%t10
 LB
 a10 M
-a110 END
+a11 END
 a110 START
-a80 END
-a80 START
+a9 END
+a90 START
+a120 H
+a13 END
+a130 START
 LE
 
 %%%%%%%t11
 LB
-a90 START
-a100 START
-a80 H
-a110 H
-a120 START
+a8 END
+a80 START
+a90 H
+a110 C a120
+a130 H
 LE
 
 %%%%%%%t12
 LB
-a90 C a80
-a100 H
-a120 C a110
-a130 START
+a80 C a90
+a120 C a130
+a10 END
+a100 START
 LE
 
 %%%%%%%t13
 a100 C a90
 a80 C d2 color=yellow
 a110 C d5 color=blue
-a130 C a120
 
 %%%%%%%t14
 a100 C d3 color=yellow
@@ -118,25 +124,25 @@ a130 C d7 color=blue
 %%%%%%%t15
 a100 C d7 color=yellow
 a90 C d4 color=yellow
-a130 C a120
+a120 C a130
 
 %%%%%%%%t16
 a100 C a90
-a120 C a110
-a130 M
+a110 C a120
+a130 H
 
 %%%%%%%%t17
-a110 H
-a90 C a80
-a100 H
-a120 M
+a110 M
+a120 H
+a130 M
+a80 C a90
+a100 M
 
 %%%%%%%%t18
-a80 H
-a100 M
-a90 M
-a110 M
+a80 M
+a90 H
+a120 M
 
 %%%%%%%%t19
-a80 M
+a90 M
 
