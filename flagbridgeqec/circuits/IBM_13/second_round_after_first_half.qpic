@@ -16,20 +16,19 @@ d4 W 4
 d5 W 5
 d6 W 6
 d7 W 7
-a8 W s_1\ket{0} {} \ket{0}	
-a9 W f_1\ket{0} {} \ket{0}	 
-a10 W s_2\ket{0} {} \ket{0}	 
-a11 W f_2\ket{0} {} \ket{0}	 
-a12 W s_3\ket{0} {} \ket{0}	 
-a13 W f_3\ket{0} {} \ket{0}	 
+a8 W s_1\ket{0} {} \ket{0}
+a9 W f_1\ket{0} {} \ket{0}
+a10 W s_2\ket{0} {} \ket{0}
+a11 W f_2\ket{0} {} \ket{0}
+a12 W s_3\ket{0} {} \ket{0}
+a13 W f_3\ket{0} {} \ket{0}
 
 %%%%%t10
 LB
-a90 C a80
-a100 H
-a120 H
-a110 a130 END
-a110 a130 START
+a9 C a8
+a10 H
+a12 H
+a11 a13 START
 LE
 
 %%%%%t11
@@ -48,6 +47,7 @@ a80 C d2 color=green
 
 %%%%%t13
 a120 C d5 color=blue
+a130 C d7 color=blue
 a110 C d4 color=red
 a100 C d3 color=red
 a90 C a80
@@ -55,7 +55,6 @@ a90 C a80
 %%%%%t14
 a80 H
 a90 M
-a120 C d7 color=blue
 a110 C a100
 
 %%%%%t15
@@ -70,62 +69,69 @@ a120 H
 a130 M
 
 %%%%t17
+LB
 a120 M
-a9 START
+a130 END
 a13 START
+a90 END
+a9 START
+LE
 
-%%%%t2
+%%%%%%%t2
+LB
 a13 H
 a9 H
+a120 END
 a12 START
+a80 END
 a8 START
+a110 END
 a11 START
+LE
 
-%%%%%%%t3
+%%%%%%t3
+LB
 a12 C a13
 a8 C a9
 a11 H
+a100 END
 a10 START
+LE
 
 %%%%%%%t4
 d4 C a12 color=blue
 d1 C a8 color=green
-d6 C a13 color=blue
+d7 C a13 color=blue
 d5 C a9 color=green
 a10 C a11
 
 %%%%%%%t5
 d5 C a12 color=blue
+d6 C a13 color=blue
 d4 C a9 color=green
 d2 C a8 color=green
 d1 C a10 color=red
 d7 C a11 color=red
 
 %%%%%%%t6
-d7 C a12 color=blue
 d4 C a11 color=red
 d3 C a10 color=red
 a8 C a9
+a12 C a13
 
-%%%%%t7
+%%%%%%%%t7
 a9 H
 a8 M
 a10 C a11
-a12 C a13
-
-%%%t8
-LB
-a9 M
-a10 M
-a11 H
 a12 M
 a13 H
-LE
 
-%%%%%%t9
-LB
-a11 M
-a9 a10 END
-a12 END
+%%%%%%%%t8
+a10 M
+a11 H
+a9 M
 a13 M
-LE
+
+%%%%%%%%t9
+a11 M
+

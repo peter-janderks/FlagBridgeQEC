@@ -16,20 +16,19 @@ d4 W 4
 d5 W 5
 d6 W 6
 d7 W 7
-a8 W s_1\ket{0} {} \ket{0}	
-a9 W f_1\ket{0} {} \ket{0}	 
-a10 W s_2\ket{0} {} \ket{0}	 
-a11 W f_2\ket{0} {} \ket{0}	 
-a12 W s_3\ket{0} {} \ket{0}	 
-a13 W f_3\ket{0} {} \ket{0}	 
+a8 W s_1\ket{0} {} \ket{0}
+a9 W f_1\ket{0} {} \ket{0}
+a10 W s_2\ket{0} {} \ket{0}
+a11 W f_2\ket{0} {} \ket{0}
+a12 W s_3\ket{0} {} \ket{0}
+a13 W f_3\ket{0} {} \ket{0}
 
 %%%%%t10
 LB
-a90 C a80
-a100 H
-a120 H
-a110 a130 END
-a110 a130 START
+a9 C a8
+a10 H
+a12 H
+a11 a13 START
 LE
 
 %%%%%t11
@@ -48,6 +47,7 @@ a80 C d2 color=green
 
 %%%%%t13
 a120 C d5 color=blue
+a130 C d7 color=blue
 a110 C d4 color=red
 a100 C d3 color=red
 a90 C a80
@@ -55,7 +55,6 @@ a90 C a80
 %%%%%t14
 a80 H
 a90 M
-a120 C d7 color=blue
 a110 C a100
 
 %%%%%t15
@@ -72,8 +71,8 @@ a130 M
 %%%%t17
 LB
 a120 M
-a90 END
-a9 START
 a130 END
 a13 START
+a90 END
+a9 START
 LE

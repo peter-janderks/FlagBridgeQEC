@@ -6,6 +6,7 @@ DEFINE a100 a10
 DEFINE a110 a11
 DEFINE a120 a12
 DEFINE a130 a13
+
 CUT
 
 d1 W 1
@@ -15,24 +16,24 @@ d4 W 4
 d5 W 5
 d6 W 6
 d7 W 7
-a8 W s_1\ket{0} {} \ket{0}	
-a9 W f_1\ket{0} {} \ket{0}	 
-a10 W s_2\ket{0} {} \ket{0}	 
-a11 W f_2\ket{0} {} \ket{0}	 
-a12 W s_3\ket{0} {} \ket{0}	 
-a13 W f_3\ket{0} {} \ket{0}	 
+a8 W s_1\ket{0} {} \ket{0}
+a9 W f_1\ket{0} {} \ket{0}
+a10 W s_2\ket{0} {} \ket{0}
+a11 W f_2\ket{0} {} \ket{0}
+a12 W s_3\ket{0} {} \ket{0}
+a13 W f_3\ket{0} {} \ket{0}
 
-%%%%t1
+%%%%%%t1
 a13 a9 START
 
-%%%%t2
+%%%%%%%t2
 a13 H
 a9 H
 a12 START
 a8 START
 a11 START
 
-%%%%%%%t3
+%%%%%%t3
 a12 C a13
 a8 C a9
 a11 H
@@ -41,48 +42,50 @@ a10 START
 %%%%%%%t4
 d4 C a12 color=blue
 d1 C a8 color=green
-d6 C a13 color=blue
+d7 C a13 color=blue
 d5 C a9 color=green
 a10 C a11
 
 %%%%%%%t5
 d5 C a12 color=blue
+d6 C a13 color=blue
 d4 C a9 color=green
 d2 C a8 color=green
 d1 C a10 color=red
 d7 C a11 color=red
 
 %%%%%%%t6
-d7 C a12 color=blue
 d4 C a11 color=red
 d3 C a10 color=red
 a8 C a9
+a12 C a13
 
-%%%%%t7
+%%%%%%%%t7
 a9 H
 a8 M
 a10 C a11
-a12 C a13
+a12 M
+a13 H
 
-%%%t8
+%%%%%%%%t8
 LB
+a10 M
+a11 H
 a8 END
 a80 START
 a9 M
-a10 M
-a11 H
-a12 M
-a13 H
+a13 M
 LE
 
-%%%%%%t9
+%%%%%%%%t9
 LB
-a80 H
 a11 M
-a9 a10 END
-a90 a100 START
-a12 END
+a12 START
 a120 START
-a13 M
+a80 H
+a90 END
+a90 START
+a100 END
+a100 START
 LE
 
