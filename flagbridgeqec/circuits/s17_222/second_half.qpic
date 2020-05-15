@@ -1,10 +1,12 @@
 PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
-DEFINE a8 a80
-DEFINE a9 a90
-DEFINE a10 a100
-DEFINE a11 a110
-DEFINE a12 a120
-DEFINE a13 a130
+
+DEFINE a80 a8
+DEFINE a90 a9
+DEFINE a100 a10
+DEFINE a110 a11
+DEFINE a120 a12
+DEFINE a130 a13
+
 CUT
 
 d1 W 1
@@ -14,18 +16,19 @@ d4 W 4
 d5 W 5
 d6 W 6
 d7 W 7
-a80 W s_1\ket{0} {} \ket{0}	
-a90 W f_1\ket{0} {} \ket{0}	 
-a100 W s_2\ket{0} {} \ket{0}	 
-a110 W f_2\ket{0} {} \ket{0}	 
-a120 W s_3\ket{0} {} \ket{0}	 
-a130 W f_3\ket{0} {} \ket{0}	 
+a8 W s_1\ket{0} {} \ket{0}	
+a9 W f_1\ket{0} {} \ket{0}	 
+a10 W s_2\ket{0} {} \ket{0}	 
+a11 W f_2\ket{0} {} \ket{0}	 
+a12 W s_3\ket{0} {} \ket{0}	 
+a13 W f_3\ket{0} {} \ket{0}	 
 
 %%%%%t10
 LB
 a90 C a80
 a100 H
 a120 H
+a110 a130 END
 a110 a130 START
 LE
 
@@ -57,7 +60,7 @@ a110 C a100
 
 %%%%%t15
 a80 M
-a130 C a12
+a130 C a120
 a100 H
 a110 M
 
@@ -69,7 +72,8 @@ a130 M
 %%%%t17
 LB
 a120 M
-a130 a90 END
-a13 a9 START
+a90 END
+a9 START
+a130 END
+a13 START
 LE
-

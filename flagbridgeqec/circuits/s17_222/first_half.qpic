@@ -6,7 +6,6 @@ DEFINE a100 a10
 DEFINE a110 a11
 DEFINE a120 a12
 DEFINE a130 a13
-
 CUT
 
 d1 W 1
@@ -23,11 +22,10 @@ a11 W f_2\ket{0} {} \ket{0}
 a12 W s_3\ket{0} {} \ket{0}	 
 a13 W f_3\ket{0} {} \ket{0}	 
 
-
-%%%%%%t1
+%%%%t1
 a13 a9 START
 
-%%%%%%t2
+%%%%t2
 a13 H
 a9 H
 a12 START
@@ -47,7 +45,7 @@ d6 C a13 color=blue
 d5 C a9 color=green
 a10 C a11
 
-%%%%%%%%%t5
+%%%%%%%t5
 d5 C a12 color=blue
 d4 C a9 color=green
 d2 C a8 color=green
@@ -60,7 +58,7 @@ d4 C a11 color=red
 d3 C a10 color=red
 a8 C a9
 
-%%%%%%%%%t7
+%%%%%t7
 a9 H
 a8 M
 a10 C a11
@@ -87,6 +85,4 @@ a12 END
 a120 START
 a13 M
 LE
-
-
 
