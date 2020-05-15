@@ -89,12 +89,15 @@ a100 END
 a120 END
 a9 a10 a12 START
 LE
+
 %%%%%t3
+LB
 a12 C a11
 a9 C a8
 a10 H
+a130 END
 a13 START
-
+LE
 TOUCH
 
 %%%%%%%t4
