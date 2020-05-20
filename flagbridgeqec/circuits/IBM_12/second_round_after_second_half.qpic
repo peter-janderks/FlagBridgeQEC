@@ -1,4 +1,4 @@
-1;95;0cPREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
+PREAMBLE \providecommand{\ket}[1]{\left|#1\right\rangle}
 
 DEFINE a80 a8
 DEFINE a90 a9

@@ -125,3 +125,7 @@ def op_set_1(name, qs):
 
 def op_set_2(name, lst):
     return [(name, q[0], q[1]) for q in lst]
+
+if __name__ == '__main__':
+    print(cir_steane_5a(1,1))
+    
