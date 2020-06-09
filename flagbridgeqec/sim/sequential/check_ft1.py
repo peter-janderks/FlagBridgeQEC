@@ -108,8 +108,8 @@ class Check_FT(object):
                                         print(lut_flag[flag1][flag_key])
                                         print(err_synds)
                                         raise('Possibly not distingushed syndromes')
-                                    else:
-                                        pass
+                            else:
+                                pass
                 elif synd_r1 & set(self.q_synd):
                     
                     for i in range(len(synd_r2)):
@@ -135,6 +135,8 @@ class Check_FT(object):
                 if synd not in lut_flag[flag].keys():
                     lut_flag[flag][synd] = lut_synd[synd]
 
+        print(len(lut_synd),'lut_synd')
+        print(len(lut_flag),'lut_flag')
         return lut_synd, lut_flag
 
     def run(self):
@@ -243,9 +245,7 @@ def steane_c2_l1(tp='XZ'):
         timesteps += esmz_anc([4,5,6,7], [120, 130, 140])
 
     if 'X' in tp:
-        print(esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9]),'timesteps 1')
         timesteps += esmxs_anc3( [3,7,2,5], [3,7,1,4], [8, 10, 9])
-        print(esmx_anc([4,5,6,7], [12, 13, 14]),'timesteps 2')
         timesteps += esmx_anc([4,5,6,7], [12, 13, 14])
 
     return timesteps
@@ -359,15 +359,16 @@ def circuit_2err2(anc, extractor_z, extractor_x, two_err, one_err=None):
     err_synd = add2check(extractor, err_synd, two_err, anc, ntp, alph_order=False)
     return err_synd
 
-def check(cir_index='c2_l1', steane=True):
+def check(cir_index='c1_l2', steane=True):
     x = Check_FT(cir_index, steane)
     err = x.run()
     return err
 
 if __name__ == '__main__':
-    x = Check_FT(cir_index='c3_l2', steane=True)
+    x = Check_FT(cir_index='c2_l2', steane=True)
     lut_synd, lut_flag = x.lut_gen()
-
+    print(lut_synd)
+    print(lut_flag)
     err = check()
     if err:
         print('Yes, this circuit is FT :)')

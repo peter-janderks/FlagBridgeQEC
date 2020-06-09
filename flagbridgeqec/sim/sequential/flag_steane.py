@@ -3,11 +3,14 @@ from flagbridgeqec.circuits import esm2, esm3, esm4, esm5, esm7
 from flagbridgeqec.sim.sequential.check_ft1 import Check_FT
 import flagbridgeqec.sim.sequential.check_ft1 as cf
 from flagbridgeqec.utils import error_model_2 as em
+#Import flagbridgeqec.ane.error_model as em
+#import error_model as em
 import circuit_metric as cm
 from operator import mul
 from functools import reduce
 import numpy as np
 
+flatten = lambda l: [item for sublist in l for item in sublist]
 
 product = lambda itrbl: reduce(mul, itrbl)
 
@@ -34,9 +37,9 @@ class Steane_FT(object):
         self.pI = self.p1*ridle
         # self.ancillas = [8, 9, 10, 11, 12, 13, 14, 80, 90, 100, 110, 120, 130, 140]
         if cir_id == 'c1_l1' or cir_id == 'c1_l2':
-            if cir_id == 'c1_l1':
+            if cir_id == 'c1_l2':
                 self.esm_circuits = esm2(idling)
-            elif cir_id == 'c1_l2':
+            elif cir_id == 'c1_l1':
                 self.esm_circuits = esm3(idling)
             self.q_synd = [9, 11, 13, 80, 100, 120]
             # q_syndx should be smaller than q_syndz
@@ -49,7 +52,7 @@ class Steane_FT(object):
 
             if cir_id == 'c2_l1':
                 self.esm_circuits = esm4(idling)
-                self.q_flag = [9, 13, 14, 90, 130, 140] 
+                self.q_flag = [9, 13,14 ,90, 130,140] 
 
             elif cir_id == 'c2_l2':
 
@@ -61,7 +64,6 @@ class Steane_FT(object):
                 self.esm_circuits = esm7(idling)
                 
                 self.q_flag = [9, 90]
-
 
             self.q_synd = [8, 10, 12, 80, 100, 120]
             self.q_syndx = [8, 10, 12]
@@ -187,6 +189,7 @@ class Steane_FT(object):
         fnl_err = np.concatenate((np.fromiter(self.fnl_errsx.values(), dtype=float),np.fromiter(self.fnl_errsz.values(), dtype=float)))
 
         return([synd_str,fnl_err],no_error)
+
     def err_synd_lld_2(self,no_error):
 
         for key in self.datas:
@@ -263,6 +266,7 @@ class Steane_FT(object):
 
     def err_synd_parallel(self):
         # reset all the syndromes and errs to be 0                            
+        print(self.ancillas,'self.ancillas')
         for key in self.ancillas:
             self.synds1[key] = 0
             self.synds2[key] = 0
@@ -287,6 +291,7 @@ class Steane_FT(object):
             synd_err = circ2err(subcir, fowler_model(subcir, 0, 0, 0), err, self.ancillas)
             synd_fnl |= synd_err[0]
             err = synd_err[1]
+
         err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndx)))]
         err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndz)))]
 
@@ -497,6 +502,17 @@ class Steane_FT(object):
     def run(self, trials = 1):
         # print(self.esm_circuits)
         # print(len(self.esm_circuits))
+        timestep_number=0
+        gate_number=0
+        for i in range(len(self.esm_circuits)):
+            timestep_number +=  len(self.esm_circuits[i])
+            gate_number += len(flatten(self.esm_circuits[i]))
+            for j in range(len(self.esm_circuits[i])):
+                print(self.esm_circuits[i][j],'circuit')
+            
+        print(timestep_number)
+        print(gate_number)
+
         for trial in range(trials):
             err = sp.Pauli()
             corr = sp.Pauli()
@@ -539,7 +555,7 @@ class Steane_FT(object):
 
             err_fnl = err
             err *= corr
-            # run another perfect round to clean the left errors
+           # run another perfect round to clean the left errors
             synd_fnl = set()
             for i in range(len(self.esm_circuits)):
                 subcir = self.esm_circuits[i]
@@ -563,7 +579,7 @@ class Steane_FT(object):
             #     print('corr is', corr)
             #     # break
             self.errors[err_tp] += 1
-
+        print(self.errors)
         return self.errors
 
     
@@ -593,6 +609,8 @@ class Steane_FT(object):
             # # check logical errors
             err_tp = singlelogical_error(err, self.init_logs)
             self.errors[err_tp] += 1
+            if err_tp != 'I':
+                print(err_fnl,'err_fnl')
         print(no_errors,'no_errors')
         print(self.errors,'self.errors')
         return (self.errors)
@@ -670,10 +688,13 @@ class Steane_FT(object):
             if synd_str != synd_zeros:
                 if synd_str in ds:                                                                 
                     if err_tp != np.argmax(ds[synd_str]):                                          
-                        total_errors +=1                                                           
+                        total_errors +=1     
                 elif err_tp != 0:
                     total_errors +=1  
-
+                    print(synd1,'synd1')
+                    print(synd2,'synd2')
+                    print(synd_str,'synd_str')
+                    print('not in dataset')
 
         return(total_errors,no_error)
 
@@ -888,16 +909,17 @@ class Steane_FT(object):
         err = sp.Pauli()
         synd1 = set()
         for i in range(len(self.esm_circuits)):
+
             subcir = self.esm_circuits[i]
             synd_err = circ2err(subcir, fowler_model(subcir, self.p1, self.p2, self.pm, 
                                                          self.pI), err, self.ancillas)
             synd1 |= synd_err[0]
             err = synd_err[1]
             if len(synd1):
-                    # if there is a syndrome or a flag, then stop this round             
-
-
+                    # if there is a syndrome or a flag, then stop this round   
                 break
+
+                
         return(err,synd1)
         
     def run_second_round_without_corr(self,err,synd1):
@@ -1016,7 +1038,6 @@ class Steane_FT(object):
         return(synd_str)
 
     def set_to_list_with_syndromes(self,synd1,synd2,synd_list):
-
         for i in range(self.num_anc):
             if self.ancillas[i] in synd1:
                 synd_list[i] = '1'
@@ -1141,7 +1162,7 @@ def circ2err(circ, err_model, err, anc):
     # last round of circuit, because there are n-1 errs, n gates
     new_synds, err = cm.apply_step(circ[-1], err)
     synd |= new_synds[1]
-    err_before = err.copy()
+#    err_before = err.copy()
     # remove remaining errors on ancilla qubits before append
     err.prep(anc)
     return synd, err
@@ -1218,7 +1239,7 @@ def check(p1, cir_id, trials, ridle):
     else:
         idling=False
     x = Steane_FT(p1, p1, p1, cir_id, idling=idling, ridle=ridle)
-    err = x.run_lut(trials)
+    err = x.run(trials)
     return err
 
 
@@ -1244,7 +1265,7 @@ def check_lut(p1, p2, pm, cir_id, trials, idling=False, ridle=0):
     c = x.check_for_logical_error_test(left_errs, c)
     print(c)
 
-    err,no_error = x.run_lut(trials)
+    err,no_error = x.run(trials)
     
     print(no_error,'no_error')
     return err
@@ -1255,5 +1276,7 @@ def check_hld(p1, p2, pm, cir_id, trials, idling, ridle):
     return err
 
 if __name__ == '__main__':
-    err = check_lut(0.001, 0.001, 0.001,'c2_l2', 100, idling=False, ridle=0)
+    err = check_lut(0.0115, 0.0015, 0.0015,'c3_l2', 10000, idling=False, ridle=0)
+
+
     print(err)
