@@ -1,0 +1,17 @@
+#!/bin/bash                                                       
+#SBATCH -J presentation
+#SBATCH -o IBM_13.out
+#SBATCH -t 24:00:00                                        
+#SBATCH --mem 60G                                                                         
+#SBATCH -p general
+#SBATCH -n 1
+#SBATCH -c 50
+#SBATCH --mail-user=peter-janderks@hotmail.com
+#SBATCH --mail-type=ALL                                                                   
+#conda activate /home/pjhsderks/bulk/miniconda3/envs/myenv/                         
+
+python run_optimized_decoders.py 0.00012 0.00013 2 80000 0.999 steane 1 1 'IBM_13' 1 1 'last' 50 'IBM_13'
+
+
+
+
