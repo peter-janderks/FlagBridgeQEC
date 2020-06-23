@@ -1,3 +1,6 @@
+import importlib_resources as pkg_resources
+#from flagbridgeqec.circuits
+import os
 def op_set_1(name, qs):
     return [(name, q) for q in qs]
 
@@ -47,7 +50,6 @@ def op_list(ls_ops):
     return(operators)
 
 def compile_sub_circuit(cir_nm,idling,living_qubits):
-
     with open(cir_nm) as f:
         read_data = f.readlines()
         all_timesteps = []
@@ -55,7 +57,6 @@ def compile_sub_circuit(cir_nm,idling,living_qubits):
         
         for line in read_data:
             if ' C ' in line or ' H' in line or 'START' in line or ' M' in line:
-                #            print(type(line))
                 timestep, living_qubits = translate_line(line, living_qubits, timestep)
             elif line == '\n':
                 
@@ -74,14 +75,17 @@ def compile_sub_circuit(cir_nm,idling,living_qubits):
     return(all_timesteps,living_qubits)
 
 def compile_circuit(cir_id,idling):
-
+    
     living_qubits_1 = list(range(1,8))
-    first_half, living_qubits_1 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/first_half.qpic',idling,living_qubits_1)
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = str(dir_path)+'/'+ str(cir_id)
+#    working_directory = os.getpwd()
+    first_half, living_qubits_1 = compile_sub_circuit(file_path + '/first_half.qpic',idling,living_qubits_1)
     living_qubits_2 = living_qubits_1[:]
-    second_half, living_qubits_2 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/second_half.qpic',idling,living_qubits_2)
+    second_half, living_qubits_2 = compile_sub_circuit(file_path + '/second_half.qpic',idling,living_qubits_2)
 
-    second_round_after_first_half,living_qubits_1 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/second_round_after_first_half.qpic',idling,living_qubits_1)
-    second_round_after_second_half,living_qubits_2 = compile_sub_circuit('../../circuits/' + str(cir_id) + '/second_round_after_second_half.qpic',idling,living_qubits_2)
+    second_round_after_first_half,living_qubits_1 = compile_sub_circuit(file_path + '/second_round_after_first_half.qpic',idling,living_qubits_1)
+    second_round_after_second_half,living_qubits_2 = compile_sub_circuit(file_path + '/second_round_after_second_half.qpic',idling,living_qubits_2)
 
     return([first_half,second_half, second_round_after_first_half, second_round_after_second_half])
 if __name__ == "__main__":
