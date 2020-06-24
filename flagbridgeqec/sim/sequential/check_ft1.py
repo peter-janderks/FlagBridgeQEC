@@ -135,8 +135,6 @@ class Check_FT(object):
                 if synd not in lut_flag[flag].keys():
                     lut_flag[flag][synd] = lut_synd[synd]
 
-        print(len(lut_synd),'lut_synd')
-        print(len(lut_flag),'lut_flag')
         return lut_synd, lut_flag
 
     def run(self):
