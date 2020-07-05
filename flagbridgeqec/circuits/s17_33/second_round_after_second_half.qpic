@@ -24,13 +24,13 @@ a11 W s_3\ket{0} {} \ket{0}
 a12 W f_2\ket{0} {} \ket{0}
 a13 W f_3\ket{0} {} \ket{0}
 
-%%%%%t1
-a8 a11 START
-
 %%%%t2
 a8 H
 a11 H
-a9 a10 a12 START
+a9 START
+a10 START
+a12 START
+
 
 %%%%%t3
 a12 C a11
