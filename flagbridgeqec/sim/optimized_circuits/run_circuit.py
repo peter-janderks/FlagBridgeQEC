@@ -1,17 +1,11 @@
 import sparse_pauli as sp
-from flagbridgeqec.circuits import cir_steane_4a, cir_steane_5a, cir_steane_6a, cir_s17_13
 from flagbridgeqec.sim.optimized_circuits.check_ft1_parallel import Check_FT
-#import check_ft1_parallel as cf
 from flagbridgeqec.utils import error_model_2 as em
 from flagbridgeqec.circuits.read_test_circuits import compile_circuit
 import circuit_metric as cm
 from operator import mul
 from functools import reduce
 import numpy as np
-#from circuits.a4_circuit import *
-#from a4_circuit import *
-#from a5_circuit import *
-#from a6_circuit import *
 
 product = lambda itrbl: reduce(mul, itrbl)
 
@@ -32,32 +26,7 @@ class FT_protocol(object):
 
         self.esm_circuits = self.esm_circuits_steane(cir_id,self.pI)
 
-        if cir_id == '6a':
-            # for Steane-cl-L2                     
-            self.q_synd = [8,10,12,80,100,120]
-            self.q_flag = [130, 110, 90, 9, 11, 13]
-            self.q_syndx = [8, 10, 12]
-            self.q_syndz = [80, 100, 120]
-            self.x_ancillas = set((80,90,100,110,120,130))
-            self.z_ancillas = set((8,9,10,11,12,13))
-        elif cir_id == '4a':
-            
-            self.q_synd = [8,9,10,80,90,100]
-            self.q_flag = [11, 110]
-            self.q_syndx = [8, 9, 10]
-            self.q_syndz = [80, 90, 100]
-            self.x_ancillas = set((80,90,100,110))
-            self.z_ancillas = set((8,9,10,11))
-        elif cir_id == '5a':
-
-            self.q_synd = [8,10,12,80,100,120]
-            self.q_flag = [9,11,90,110]
-            self.q_syndx = [80,100,120]
-            self.q_syndz = [8,10,12]
-            self.x_ancillas = set((80,90,100,110,120))
-            self.z_ancillas = set((8,9,10,11,12))
-            
-        elif cir_id == 'IBM_11':
+        if cir_id == 'IBM_11':
 
             self.q_synd = [8,9,10,80,90,100]
             self.q_flag = [11, 110]
@@ -121,20 +90,7 @@ class FT_protocol(object):
 
 
     def esm_circuits_steane(self,cir_id, idling=False):
-        if cir_id == '6a':
-            esm_circuits = []
-            esm_circuits.extend([cir_steane_6a(1,idling),cir_steane_6a(2,idling),cir_steane_6a(3,idling),cir_steane_6a(4,idling)])
-        elif cir_id == '4a':
-            esm_circuits = []
-            esm_circuits.extend([cir_steane_4a(1,idling),cir_steane_4a(2,idling),cir_steane_4a(3,idling), cir_steane_4a(4,idling), cir_steane_4a(5,idling)])
-        elif cir_id == '5a':
-            esm_circuits = []
-            esm_circuits.extend([cir_steane_5a(1,idling),cir_steane_5a(2,idling),cir_steane_5a(3,idling),cir_steane_5a(4,idling)])
-        elif cir_id == 's17_13':
-            esm_circuits = []
-            esm_circuits.extend([cir_s17_13(1,idling),cir_s17_13(2,idling),cir_s17_13(3,idling),cir_s17_13(4,idling)])
-
-        elif cir_id == 'IBM_11':
+        if cir_id == 'IBM_11':
             esm_circuits = compile_circuit('IBM_11',idling)
             self.x_ancillas = set((80,90,100,110))
             self.z_ancillas = set((8,9,10,11))
@@ -158,10 +114,6 @@ class FT_protocol(object):
             esm_circuits = compile_circuit('s17_222',idling)
             self.x_ancillas = set((80,90,100,110,120,130))
             self.z_ancillas = set((8,9,10,11,12,13))
-
-        elif cir_id == 'a4_L2_split':
-            esm_circuits = []
-            esm_circuits.extend([a4_L2_split(1),cir_steane_5a(2),cir_steane_5a(3),cir_steane_5a(4,)])
 
         return(esm_circuits)
         
@@ -195,7 +147,7 @@ class FT_protocol(object):
             err *= self.lut_synd[tuple(sorted(synd_fnl & set(self.q_syndz)))]
 
             # # check logical errors 
-            err_tp = self.singlelogical_error(err, self.init_logs)
+            err_tp = singlelogical_error(err, self.init_logs)
             self.errors[err_tp] += 1
             
 
@@ -554,5 +506,5 @@ def check(per,trials, cir_id,p_idling):
 
 if __name__ == '__main__':
     x = FT_protocol(0.0005,cir_id='s17_222',p_idling=0)
-    error = x.run(1000)
+    error = x.run(100)
     print(error)

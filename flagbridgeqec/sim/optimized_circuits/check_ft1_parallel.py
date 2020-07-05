@@ -16,26 +16,7 @@ class Check_FT(object):
                                   100: sp.Pauli(z_set=[1,3,4,7]),
                                   120:  sp.Pauli(z_set=[4,5,6,7])}}
 
-        if cir_index == '4a':
-            self.q_synd = [8,9,10,80,90,100]
-            self.q_flag = [11, 110]
-            self.q_syndx = [8, 9, 10]
-            self.q_syndz = [80, 90, 100]
-
-        elif cir_index == '5a':
-            self.q_synd = [8,10,12,80,100,120]
-            self.q_flag = [9,11,90,110]
-            self.q_syndx = [80,100,120]
-            self.q_syndz = [8,10,12]
-
-        elif cir_index == '6a':
-            # for Steane-cl-L2                                                 
-            self.q_synd = [8,10,12,80,100,120]
-            self.q_flag = [130, 110, 90, 9, 11, 13]
-            self.q_syndx = [8, 10, 12]
-            self.q_syndz = [80, 100, 120]
-
-        elif cir_index == 'IBM_11':
+        if cir_index == 'IBM_11':
             self.q_synd = [8,9,10,80,90,100]
             self.q_flag = [11, 110]
             self.q_syndx = [80, 90, 100]
@@ -48,7 +29,6 @@ class Check_FT(object):
             self.q_syndz = [8,10,12]
 
         elif cir_index == 'IBM_13':
-            # for Steane-cl-L2                                                          
             self.q_flag = [8,10,12,80,100,120]
             self.q_synd = [130, 110, 90, 9, 11, 13]
             self.q_syndx = [130,110,90]
@@ -96,19 +76,7 @@ class Check_FT(object):
 
     def ft_circuit(self,idling=False):
         timestps = []
-        if self.cir_index == '4a':
-            timestps.extend([cir_steane_4a(1,idling),cir_steane_4a(2,idling),
-                             cir_steane_4a(3,idling),cir_steane_4a(4,idling)])
-            self.x_ancillas = set((8,9,10,11))
-            self.z_ancillas = set((80,90,100,110))
-            
-        elif self.cir_index == '5a':
-            timestps.extend([cir_steane_5a(1,idling),cir_steane_5a(2,idling),
-                             cir_steane_5a(3,idling),cir_steane_5a(4,idling)])
-            self.x_ancillas = set((80,90,100,110,120))
-            self.z_ancillas = set((8,9,10,11,12))
-
-        elif self.cir_index == 'IBM_11':
+        if self.cir_index == 'IBM_11':
             timestps = compile_circuit('IBM_11',idling)
             self.x_ancillas = set((80,90,100,110))
             self.z_ancillas = set((8,9,10,11))
@@ -123,12 +91,6 @@ class Check_FT(object):
             self.x_ancillas = set((80,90,100,110,120,130))
             self.z_ancillas = set((8,9,10,11,12,13))
 
-        elif self.cir_index == '6a':
-            timestps.extend([cir_steane_6a(1,idling),cir_steane_6a(2,idling),
-                             cir_steane_6a(3,idling),cir_steane_6a(4,idling)])
-            self.x_ancillas = set((80,90,100,110,120,130))
-            self.z_ancillas = set((8,9,10,11,12,13))
-            
         elif self.cir_index == 's17_222':
             timestps = compile_circuit('s17_222',idling)
             self.x_ancillas = set((80,90,100,110,120,130))
@@ -139,12 +101,6 @@ class Check_FT(object):
             self.x_ancillas = set((80,90,100,110,120,130))
             self.z_ancillas = set((8,9,10,11,12,13))
 
-        elif self.cir_index == 's17_13':
-            timestps.extend([cir_s17_13(1,idling),cir_s17_13(2,idling),
-                             cir_s17_13(3,idling),cir_s17_13(4,idling)])
-            self.x_ancillas = set((80,90,100,110,120,130))
-            self.z_ancillas = set((8,9,10,11,12,13))
-        
         return timestps
 
     def circuit_and_statistics(self):
@@ -248,8 +204,6 @@ class Check_FT(object):
         err_synd = {}
         f_c1 = flatten(full_circuit[0])
         f_c2 = flatten(full_circuit[2])
-
-
         err_synd = self.half_err_synd_pairs(err_synd,f_c1,f_c2,self.x_ancillas)
         f_c1 = flatten(full_circuit[1])
         f_c2 = flatten(full_circuit[3])
@@ -372,7 +326,6 @@ def esm_apply_err(extractor, anc, errors, rg=0, bk=False):
     firing_ancilla = set()
     for j in range(rg, len(extractor)):
         if extractor[j][0] == 'P':
-#            errors.prep(anc)
             if bk:
                 break
         else:
@@ -384,10 +337,6 @@ def esm_apply_err(extractor, anc, errors, rg=0, bk=False):
 def esm_apply_err_skip_P(extractor, anc, errors, rg=0, bk=False):
     firing_ancilla = set()
     for j in range(rg, len(extractor)):
-#        if extractor[j][0] == 'P':
-#            pass
-
- #       else:
         ancilla_measurements, errors = cm.apply_step([extractor[j]], errors)
         firing_ancilla |= ancilla_measurements[1]
     errors.prep(anc)
